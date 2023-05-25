@@ -14,7 +14,7 @@ export declare class CommentController {
         };
     }, res: Response, next: NextFunction): Promise<{
         totalComments: number;
-        comments: Comment[];
+        comments: any[];
         page: number;
         hasNextPage: boolean;
     }>;

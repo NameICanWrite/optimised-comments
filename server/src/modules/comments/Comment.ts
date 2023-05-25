@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, getMetadataArgsStorage } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, getMetadataArgsStorage } from 'typeorm';
 import { User } from '../users/User';
 import { entityTypes } from '../../consts';
 import { number } from 'joi';
@@ -9,8 +9,8 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({default: () => `TO_TIMESTAMP('${new Date().toISOString()}', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ')`})
-  createdAt: string
+  @CreateDateColumn()
+  createdAt: Date
 
   @Column()
   text: string
@@ -21,7 +21,9 @@ export class Comment extends BaseEntity {
   @OneToMany(() => Comment, comment => comment.parent)
   replies: Comment[];
 
-  @ManyToOne(() => User, (user: User) => user.comments)
+  @ManyToOne(() => User, (user: User) => user.comments,
+  //  {eager: true}
+   )
   user: User
 }
 

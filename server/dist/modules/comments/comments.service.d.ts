@@ -9,7 +9,7 @@ declare class CommentService {
         isSortAscending: boolean;
     }): Promise<{
         totalComments: number;
-        comments: Comment[];
+        comments: any[];
         page: number;
         hasNextPage: boolean;
     }>;

@@ -28,12 +28,12 @@ export class CommentController {
     const allowedSortFields = [
       'user.name',
       'user.email',
-      'createdAt',
+      'comment.createdAt',
     ]
     return await commentService.findAll({
       page: page ? parseInt(page) : 1,
       limit: limit ? parseInt(limit) : 100000,
-      sortField: allowedSortFields.includes(sortField) ? sortField : 'createdAt',
+      sortField: allowedSortFields.includes(sortField) ? sortField : 'comment.createdAt',
       isSortAscending: isSortAscending === 'true',
     })
   }

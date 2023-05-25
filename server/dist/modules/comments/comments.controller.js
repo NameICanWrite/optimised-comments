@@ -22,12 +22,12 @@ let CommentController = class CommentController {
         const allowedSortFields = [
             'user.name',
             'user.email',
-            'createdAt',
+            'comment.createdAt',
         ];
         return await comments_service_1.default.findAll({
             page: page ? parseInt(page) : 1,
             limit: limit ? parseInt(limit) : 100000,
-            sortField: allowedSortFields.includes(sortField) ? sortField : 'createdAt',
+            sortField: allowedSortFields.includes(sortField) ? sortField : 'comment.createdAt',
             isSortAscending: isSortAscending === 'true',
         });
     }

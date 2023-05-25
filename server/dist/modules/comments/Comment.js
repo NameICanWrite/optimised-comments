@@ -21,8 +21,8 @@ __decorate([
     __metadata("design:type", Number)
 ], Comment.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: () => `TO_TIMESTAMP('${new Date().toISOString()}', 'YYYY-MM-DD"T"HH24:MI:SS.MSZ')` }),
-    __metadata("design:type", String)
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
 ], Comment.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
