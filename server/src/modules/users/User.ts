@@ -7,7 +7,7 @@ import { entityTypes } from '../../consts';
 @Entity(entityTypes.USER)
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   email: string;
@@ -16,7 +16,10 @@ export class User extends BaseEntity {
   name: string
 
   @Column({nullable: true})
-  avatar: string;
+  avatarUrl: string;
+
+  @Column({nullable: true})
+  homepage: string
 
   @Column()
   password: string;

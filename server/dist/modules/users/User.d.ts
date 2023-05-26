@@ -1,10 +1,11 @@
 import { BaseEntity } from 'typeorm';
 import { Comment } from '../comments/Comment';
 export declare class User extends BaseEntity {
-    id: string;
+    id: number;
     email: string;
     name: string;
-    avatar: string;
+    avatarUrl: string;
+    homepage: string;
     password: string;
     isActive: boolean;
     passwordResetCode: string;

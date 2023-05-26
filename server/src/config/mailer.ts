@@ -3,7 +3,6 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-console.log(process.env.MAIL_TRANSPORT_PASSWORD);
 
 let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",

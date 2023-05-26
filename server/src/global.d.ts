@@ -7,6 +7,8 @@ declare global {
       JWT_COOKIES_EXPIRES_IN: string
       JWT_TOKEN_EXPIRES_IN: string
       CLIENT_ROOT_URL:string;
+      FIREBASE_PRIVATE_KEY: string
+      FIREBASE_SERVER_UID: string
     }
   }
 }

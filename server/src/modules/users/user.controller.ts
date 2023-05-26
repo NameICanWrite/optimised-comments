@@ -10,6 +10,10 @@ import { BACKEND_PAGES, FRONTEND_PAGES } from '../../consts';
 import { sendMail } from '../../config/mailer';
 import crypto from 'crypto'
 import dotenv from 'dotenv'
+import { UploadedFile } from 'express-fileupload';
+import sharp from 'sharp';
+import { deleteAvatarFromFirebase, uploadAvatarToFirebase } from '../../utils/firebase';
+import Joi from 'joi';
 
 dotenv.config()
 
@@ -169,6 +173,44 @@ export class UserController {
     return 'Password changed successfully'
   }
 
+  async setAvatar(req: Request<any, any, any> & { user: User, files: {avatar: UploadedFile} }, res: Response) {
+    const {avatar} = req.files
+    
+    //validate avatar
+    if (!avatar) {
+      res.status(400)
+      return 'Avatar is required'
+    }
+    const allowedAvatarExtensions = ['gif', 'jpg', 'png']
+    const avatarExtension = avatar.mimetype.split('/')[1]
+    if (!allowedAvatarExtensions.includes(avatarExtension)){
+      res.status(400)
+      return 'Only gif, jpg, png extensions accepted. Wrong extension.'
+    }
+
+    // Resize the image if necessary
+    const image = sharp(avatar.tempFilePath, {animated: avatarExtension === 'gif'});
+    const metadata = await image.metadata();
+
+    if (metadata.width && metadata.height && (metadata.width > 320 || metadata.height > 240)) {
+      const resizedImage = await image.resize(320, 240).toBuffer();
+      avatar.data = resizedImage
+    }
+
+    //save image
+    await deleteAvatarFromFirebase(req.user.id)
+    const url = await uploadAvatarToFirebase(avatar, req.user.id)
+    await userService.setAvatar(req.user.id, url)
+
+    return {url, message: 'Avatar has been changed'}
+  }
+
+  async setHomepage(req: Request<any, any, { homepage: string }> & { user: User }, res: Response) {
+    const { homepage } = req.body
+    await Joi.string().uri().required().validateAsync(homepage)
+    await userService.setHomepage(req.user.id, homepage)
+    return 'Homepage changed successfully'
+  }
 }
 
 export const userController = new UserController()

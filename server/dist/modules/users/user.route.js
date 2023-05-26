@@ -14,6 +14,8 @@ router.post('/signup-and-send-activation-email', generic_validator_1.default.isB
 router.post('/login', generic_validator_1.default.isBodyValidEntity('login'), (0, auth_middleware_1.AddAuthToken)(user_controller_1.userController.login));
 router.post('/send-password-reset-code', generic_validator_1.default.isBodyValidEntity('withEmail'), (0, try_catch_decorator_1.default)(user_controller_1.userController.sendResetPasswordCodeEmail));
 router.post('/reset-password', generic_validator_1.default.isBodyValidEntity('resetPassword'), (0, try_catch_decorator_1.default)(user_controller_1.userController.resetPasswordWithCode));
+router.post('/set-avatar', auth_middleware_1.authAndGetUser, (0, try_catch_decorator_1.default)(user_controller_1.userController.setAvatar));
+router.post('/set-homepage', auth_middleware_1.authAndGetUser, (0, try_catch_decorator_1.default)(user_controller_1.userController.setHomepage));
 router.get('/current', auth_middleware_1.authAndGetUser, (0, try_catch_decorator_1.default)(user_controller_1.userController.getCurrentUser));
 router.get('/current/comments', auth_middleware_1.authAndGetUser, (0, try_catch_decorator_1.default)(user_controller_1.userController.getCurrentUserComments));
 exports.default = router;

@@ -7,7 +7,6 @@ exports.sendMail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-console.log(process.env.MAIL_TRANSPORT_PASSWORD);
 let transporter = nodemailer_1.default.createTransport({
     host: "smtp.gmail.com",
     port: 587,

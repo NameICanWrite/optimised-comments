@@ -32,6 +32,12 @@ class UserService {
     async addPasswordResetCode(email, code) {
         await User_1.User.update({ email }, { passwordResetCode: code, passwordResetCodeExpiresAt: (Date.now() + 60 * 1000 * 10).toString() });
     }
+    async setAvatar(id, avatarUrl) {
+        await User_1.User.update(id, { avatarUrl });
+    }
+    async setHomepage(id, homepage) {
+        await User_1.User.update(id, { homepage });
+    }
     async delete(id) {
         await User_1.User.delete(id);
     }

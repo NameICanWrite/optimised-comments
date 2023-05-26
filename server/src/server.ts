@@ -4,6 +4,7 @@ import 'dotenv/config';
 import Joi from 'joi'
 import cors from 'cors';
 import cookieParser from 'cookie-parser'
+import fileUpload from 'express-fileupload'
 import dotenv from 'dotenv'
 import AppRouter from './router';
 import connectDB from './config/database';
@@ -29,8 +30,12 @@ app.set('port', process.env.PORT || 5000);
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-
 app.use(cookieParser())
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/',
+  limits: {fileSize: 50 * 1024 * 1024}
+}))
 
 router.init();
 

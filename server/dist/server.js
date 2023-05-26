@@ -8,6 +8,7 @@ require("dotenv/config");
 const joi_1 = __importDefault(require("joi"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const router_1 = __importDefault(require("./router"));
 const database_1 = __importDefault(require("./config/database"));
@@ -27,6 +28,11 @@ app.set('port', process.env.PORT || 5000);
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
+app.use((0, express_fileupload_1.default)({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+    limits: { fileSize: 50 * 1024 * 1024 }
+}));
 router.init();
 const port = app.get('port');
 app.use((err, req, res, next) => {

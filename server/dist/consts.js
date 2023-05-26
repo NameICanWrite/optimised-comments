@@ -8,7 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.entityTypes = {
     USER: 'user-dzencode',
-    COMMENTS: 'comments-dzencode'
+    COMMENTS: 'comments-dzencode',
+    CAPTCHA: 'captcha-dzencode'
 };
 exports.FRONTEND_PAGES = {
     TOKEN_CONFIRMATION_FAILURE: `${process.env.CLIENT_ROOT_URL}/token-is-wrong`,

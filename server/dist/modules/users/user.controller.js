@@ -11,6 +11,9 @@ const consts_1 = require("../../consts");
 const mailer_1 = require("../../config/mailer");
 const crypto_1 = __importDefault(require("crypto"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const sharp_1 = __importDefault(require("sharp"));
+const firebase_1 = require("../../utils/firebase");
+const joi_1 = __importDefault(require("joi"));
 dotenv_1.default.config();
 class UserController {
     constructor() { }
@@ -150,6 +153,35 @@ class UserController {
         const hashedNewPassword = await bcrypt_1.default.hash(newPassword, 10);
         await user_service_1.default.changePassword(req.user.id, hashedNewPassword);
         return 'Password changed successfully';
+    }
+    async setAvatar(req, res) {
+        const { avatar } = req.files;
+        if (!avatar) {
+            res.status(400);
+            return 'Avatar is required';
+        }
+        const allowedAvatarExtensions = ['gif', 'jpg', 'png'];
+        const avatarExtension = avatar.mimetype.split('/')[1];
+        if (!allowedAvatarExtensions.includes(avatarExtension)) {
+            res.status(400);
+            return 'Only gif, jpg, png extensions accepted. Wrong extension.';
+        }
+        const image = (0, sharp_1.default)(avatar.tempFilePath, { animated: avatarExtension === 'gif' });
+        const metadata = await image.metadata();
+        if (metadata.width && metadata.height && (metadata.width > 320 || metadata.height > 240)) {
+            const resizedImage = await image.resize(320, 240).toBuffer();
+            avatar.data = resizedImage;
+        }
+        await (0, firebase_1.deleteAvatarFromFirebase)(req.user.id);
+        const url = await (0, firebase_1.uploadAvatarToFirebase)(avatar, req.user.id);
+        await user_service_1.default.setAvatar(req.user.id, url);
+        return { url, message: 'Avatar has been changed' };
+    }
+    async setHomepage(req, res) {
+        const { homepage } = req.body;
+        await joi_1.default.string().uri().required().validateAsync(homepage);
+        await user_service_1.default.setHomepage(req.user.id, homepage);
+        return 'Homepage changed successfully';
     }
 }
 exports.UserController = UserController;

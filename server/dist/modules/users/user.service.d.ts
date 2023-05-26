@@ -13,6 +13,8 @@ declare class UserService {
     findByEmail(email: string): Promise<User | null>;
     findByName(name: string): Promise<User | null>;
     addPasswordResetCode(email: string, code: string): Promise<void>;
+    setAvatar(id: number, avatarUrl: string): Promise<void>;
+    setHomepage(id: number, homepage: string): Promise<void>;
     delete(id: string): Promise<void>;
     isUserExists(id: string): Promise<boolean>;
 }

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const comments_route_1 = __importDefault(require("./modules/comments/comments.route"));
 const user_route_1 = __importDefault(require("./modules/users/user.route"));
+const captcha_route_1 = __importDefault(require("./modules/captcha/captcha.route"));
 class AppRouter {
     constructor(app) {
         this.app = app;
@@ -15,6 +16,7 @@ class AppRouter {
         });
         this.app.use('/api/comments', comments_route_1.default);
         this.app.use('/api/user', user_route_1.default);
+        this.app.use('/api/captcha', captcha_route_1.default);
     }
 }
 exports.default = AppRouter;

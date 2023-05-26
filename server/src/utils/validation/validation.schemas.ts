@@ -4,6 +4,8 @@ import { entityTypes } from "../../consts"
 
 const validationSchemas = {
   [entityTypes.COMMENTS]: Joi.object({
+      captchaText: Joi.string().trim().required(),
+      captchaId: Joi.number().required(),
       text: Joi.string().trim().required(),
       parentId: Joi.number(),
   }),

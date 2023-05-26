@@ -1,6 +1,7 @@
 export declare const entityTypes: {
     USER: string;
     COMMENTS: string;
+    CAPTCHA: string;
 };
 export declare const FRONTEND_PAGES: {
     TOKEN_CONFIRMATION_FAILURE: string;

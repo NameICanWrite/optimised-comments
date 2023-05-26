@@ -4,7 +4,8 @@ dotenv.config()
 
 export const entityTypes = {
   USER: 'user-dzencode',
-  COMMENTS: 'comments-dzencode'
+  COMMENTS: 'comments-dzencode',
+  CAPTCHA: 'captcha-dzencode'
 }
 
 export const FRONTEND_PAGES = {

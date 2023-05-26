@@ -34,6 +34,8 @@ router.post('/reset-password',
   validator.isBodyValidEntity('resetPassword'),
   TryCatch(userController.resetPasswordWithCode)
 )
+router.post('/set-avatar', authAndGetUser, TryCatch(userController.setAvatar))
+router.post('/set-homepage', authAndGetUser, TryCatch(userController.setHomepage))
 
 //fetch functionality
 router.get('/current', authAndGetUser, TryCatch(userController.getCurrentUser))

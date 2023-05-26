@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from './User';
+import { UploadedFile } from 'express-fileupload';
 export declare class UserController {
     constructor();
     signup(req: Request, res: Response, next: NextFunction): Promise<{
@@ -8,7 +9,7 @@ export declare class UserController {
     } | {
         resBody: string;
         tokenPayload: {
-            userId: string;
+            userId: number;
         };
     }>;
     login(req: Request<any, any, {
@@ -20,7 +21,7 @@ export declare class UserController {
     } | {
         resBody: User;
         tokenPayload: {
-            userId: string;
+            userId: number;
         };
     }>;
     activateUserAndRedirectToFrontend(req: Request, res: Response, next: NextFunction): Promise<void>;
@@ -41,10 +42,11 @@ export declare class UserController {
         password: undefined;
         passwordResetCode: undefined;
         passwordResetCodeExpiresAt: undefined;
-        id: string;
+        id: number;
         email: string;
         name: string;
-        avatar: string;
+        avatarUrl: string;
+        homepage: string;
         isActive: boolean;
         comments: import("../comments/Comment").Comment[];
     }>;
@@ -59,6 +61,20 @@ export declare class UserController {
     }, res: Response): Promise<"Old password incorrect" | "Password changed successfully">;
     changePassword(req: Request<any, any, {
         newPassword: string;
+    }> & {
+        user: User;
+    }, res: Response): Promise<string>;
+    setAvatar(req: Request<any, any, any> & {
+        user: User;
+        files: {
+            avatar: UploadedFile;
+        };
+    }, res: Response): Promise<"Avatar is required" | "Only gif, jpg, png extensions accepted. Wrong extension." | {
+        url: string;
+        message: string;
+    }>;
+    setHomepage(req: Request<any, any, {
+        homepage: string;
     }> & {
         user: User;
     }, res: Response): Promise<string>;

@@ -7,6 +7,8 @@ const joi_1 = __importDefault(require("joi"));
 const consts_1 = require("../../consts");
 const validationSchemas = {
     [consts_1.entityTypes.COMMENTS]: joi_1.default.object({
+        captchaText: joi_1.default.string().trim().required(),
+        captchaId: joi_1.default.number().required(),
         text: joi_1.default.string().trim().required(),
         parentId: joi_1.default.number(),
     }),
