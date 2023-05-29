@@ -1,0 +1,133 @@
+// .header,
+// .comments {
+//    margin: 0 auto;
+// }
+.comments {
+   margin-left: 50px;
+}
+// .comments,
+// .comments__container {
+//    display: flex;
+// }
+
+// .comments {
+//    width: 100%;
+//    flex-direction: column;
+//    flex-wrap: wrap;
+//    justify-content: space-between;
+//    margin-left: 50px;
+//    margin-top: 50px;
+
+//    &__container {
+//       background: #ffffff;
+//       flex-direction: column;
+//       text-align: center;
+//       justify-content: space-around;
+//       min-width: 282px;
+//       max-width: 370px;
+//       width: -webkit-fill-available;
+//       height: 254px;
+//       border: none;
+//       box-sizing: border-box;
+//       border-radius: 14px;
+//       padding: 20px;
+//       margin: 0;
+//       margin-bottom: 29px;
+//    }
+
+//    &__avatar {
+//       display: block;
+//       width: 100%;
+//       max-height: 70px;
+
+//       img {
+//          width: 70px;
+//          height: 70px;
+//          border-radius: 50%;
+//       }
+//    }
+
+//    &__name {
+//       margin: 20px auto;
+//       white-space: nowrap;
+//    }
+
+   
+//    &__position,
+//    &__email,
+//    &__phone {
+//       margin: 0 auto;
+//       white-space: nowrap;
+//    }
+   
+// }
+
+// button.more {
+//    margin-top: 21px;
+// }
+
+// .loading {
+//    transition: all 5s ease;
+//    margin: 20px auto
+// }
+
+// @media screen and (min-width: 320px) {
+//    .comments {
+//       justify-content: center;
+//       gap: 20px;
+//       margin-bottom: 20px;
+
+//       &__container {
+//          max-width: 282px;
+//          margin-bottom: 0;
+//       }
+//    }
+
+//    button.more {
+//       margin-top: 30px;
+//    }
+// }
+
+// @media screen and (min-width: 360px) {
+//    .comments {
+//       &__container {
+//          max-width: 328px;
+//       }
+//    }
+// }
+
+// @media screen and (min-width: 768px) {
+//    .comments {
+//       gap: 16px;
+//       margin-bottom: 15px;
+
+//       &__container {
+//          max-width: 344px;
+//       }
+//    }
+
+//    button.more {
+//       margin-top: 34px;
+//    }
+// }
+
+// @media screen and (min-width: 1024px) {
+//    .comments {
+//       gap: 29px;
+
+//       &__container {
+//          max-width: 282px;
+//          margin-bottom: 0;
+//       }
+//    }
+// }
+
+// @media screen and (min-width: 1170px) {
+//    .comments {
+//       max-width: 1170px;
+
+//       &__container {
+//          max-width: 370px;
+//       }
+//    }
+// }

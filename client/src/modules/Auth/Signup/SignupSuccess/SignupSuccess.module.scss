@@ -1,0 +1,18 @@
+.signupSuccess {
+  display: block;
+  margin: 140px auto 100px;
+  max-width: 1170px;
+  text-align: center;
+
+  &__message {
+    margin: 0 auto;
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 40px;
+  }
+  &__image {
+    margin-top: 50px;
+  }
+}

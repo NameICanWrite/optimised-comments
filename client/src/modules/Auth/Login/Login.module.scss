@@ -1,0 +1,108 @@
+.header {
+   margin-top: 0;
+   max-width: 1170px;
+}
+
+.imageUpload {
+   margin: 40px auto;
+}
+
+.signupForm,
+.textInputs {
+   max-width: 380px;
+}
+
+.signupForm {
+   border: none;
+
+   .textInputs {
+      min-height: 54px;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      margin-bottom: 10px; 
+   }
+
+   .textInput {
+      width: -webkit-fill-available;
+      margin: 11px auto;
+
+      input {
+         padding: 16px 16px;
+      }
+   }
+
+   .positionsRadioGroup {
+      &__title {
+         margin-bottom: 5px;
+         color: rgba(0, 0, 0, 0.87);
+      }
+
+      &__positiont {
+         margin-top: 0;
+         margin-bottom: 0;
+      }
+   }
+
+   .imageUpload {
+      display: flex;
+      flex-wrap: nowrap;
+      margin-bottom: 50px;
+
+      label {
+         padding: 14px auto;
+         text-align: center;
+      }
+
+      &__fileInput_hidden {
+         color: transparent;
+         width: 0;
+         height: 0;
+         border: none;
+         box-sizing: border-box;
+
+         &::file-selector-button {
+            visibility: hidden;
+         }
+      }
+
+      &__desc {
+         width: 297px;
+         max-height: 54px;
+         flex-grow: 1;
+         margin-left: -2px;
+
+         fieldset,
+         input[type='text'] {
+            border: none;
+         }
+      }
+   }
+
+   input[type='submit'] {
+      display: block;
+   }
+}
+
+@media screen and (max-width: 425px) {
+   .header,
+   .signupForm,
+   .textInputs {
+      max-width: 328px;
+   }
+}
+
+@media screen and (max-width: 340px) {
+   .header,
+   .signupForm,
+   .textInputs {
+      max-width: 300px;
+   }
+
+   .imageUpload {
+      label {
+         padding: 12px 2px;
+         text-align: center;
+      }
+   }
+}
