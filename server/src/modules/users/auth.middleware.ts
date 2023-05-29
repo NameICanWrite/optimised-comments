@@ -36,6 +36,7 @@ export const passportOptionsLogin = {
 export const passportJwtStrategyLoginWithActivation = new JwtStrategy(passportOptionsLogin, async ({userId}: {userId: number}, done: VerifiedCallback) => {
 
   try {
+    console.log(userId)
       let user
       let cachedUser = await redisClient.get(`user:${userId}`)
       if (cachedUser) {

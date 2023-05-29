@@ -58,7 +58,6 @@ button {
       }
 
       &:disabled {
-         display: block;
          background: #b4b4b4;
          color: rgba(255, 255, 255, 0.87);
          cursor: default;

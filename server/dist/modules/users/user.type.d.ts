@@ -4,6 +4,7 @@ export interface IUser {
     email: string;
     password: string;
     comments?: Comment[];
+    avatarUrl?: string;
 }
 export interface IJwtAuthPayload {
     userId: string;

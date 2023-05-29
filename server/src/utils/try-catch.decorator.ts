@@ -8,7 +8,7 @@ function isAsyncFunction(target: Function) {
     return typeof target === 'function' && target.constructor.name === 'AsyncFunction'
 }
 
-function TryCatchClass(target: Function) {
+function TryCatchClass(target: new () => {})  {
     const methodNames = Object.getOwnPropertyNames(target.prototype)
     methodNames.forEach((methodName) => {
         const originalMethod = target.prototype[methodName]

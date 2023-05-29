@@ -6,5 +6,5 @@ export declare class Comment extends BaseEntity {
     text: string;
     parent: Comment;
     replies: Comment[];
-    user: User;
+    user: Partial<User>;
 }

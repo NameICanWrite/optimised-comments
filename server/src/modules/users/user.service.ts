@@ -1,8 +1,8 @@
+import { DeepPartial, getConnection, getRepository } from 'typeorm';
 import { IUser } from './user.type';
 import { User } from './User';
 
 import { entityTypes } from '../../consts';
-import { DeepPartial } from 'typeorm';
 
 class UserService {
   async findAll() {
@@ -16,7 +16,9 @@ class UserService {
   }
 
   async activate(id: number) {
-    return await User.save({id, isActive: true})
+    const user = await this.updateAndGet(id, { isActive: true})
+    console.log('activated user', user);
+    return user
   }
 
   async findById(id: number) {
@@ -34,11 +36,12 @@ class UserService {
   }
 
   async setAvatar(id: number, avatarUrl: string) {
-    return await User.save({id, avatarUrl})
+    const user = await this.updateAndGet(id, {avatarUrl})
+    return user
   }
 
   async setHomepage(id: number, homepage: string) {
-    return await User.save({id, homepage})
+    return await this.updateAndGet(id, {homepage})
   }
 
   async delete(id: number) {
@@ -47,6 +50,20 @@ class UserService {
 
   async isUserExists(id: number) {
     return !!(await this.findById(id))
+  }
+
+  async updateAndGet(id: number, fields: DeepPartial<User>) {
+    const connection = getConnection();
+  
+    const updatedUser = await connection
+      .createQueryBuilder()
+      .update(User)
+      .set(fields)
+      .where('id = :id', { id })
+      .returning('*')
+      .execute();
+  
+    return updatedUser.raw[0]
   }
 }
 

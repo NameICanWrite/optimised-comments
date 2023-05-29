@@ -26,7 +26,18 @@ function App() {
    const [editHomepageError, setEditHomepageError] = useState('')
 
    const [comments, setComments] = useState([])
+
+   const commentSortFields = [
+      'user.name',
+      'user.email',
+      'comment.createdAt',
+    ]
+   const [commentSortField, setCommentSortField] = useState('comment.createdAt')
+   const [isCommentSortAscending, setIsCommentSortAscending] = useState(false)
+
+   const [commentsDisplayedPage, setCommentsDisplayedPage] = useState(1)
    const [commentsLastPage, setCommentsLastPage] = useState(0)
+   const [totalComments, setTotalComments] = useState(0)
    const [isCommentsLoading, setIsCommentsLoading] = useState(false)
 
 
@@ -43,11 +54,17 @@ function App() {
       if (!arg?.shouldCollapse) {
          prevCommentsLastPage = commentsLastPage
          prevComments = comments
+      } else {
+         setCommentsDisplayedPage(1)
       }
-      console.log(`${API_URL}/comments?page=${prevCommentsLastPage + 1}&limit=${COMMENTS_ON_PAGE}`);
-      const nextComments = (await axios.get(`${API_URL}/comments?page=${prevCommentsLastPage + 1}&limit=${COMMENTS_ON_PAGE}&isSortAscending=false`)).data.comments
-      console.log(nextComments);
-      console.log([...prevComments, ...nextComments]);
+      const {comments: nextComments, totalComments} = (await axios.get(`${API_URL}/comments?`+
+      `page=${prevCommentsLastPage + 1}&` + 
+      `limit=${COMMENTS_ON_PAGE}&` + 
+      `isSortAscending=${isCommentSortAscending}&` + 
+      `sortField=${commentSortField}`
+      )).data
+      
+      setTotalComments(totalComments)
       setComments([...prevComments, ...nextComments])
       setCommentsLastPage(prevCommentsLastPage + 1)
 
@@ -83,7 +100,7 @@ function App() {
    }
 
    const logout = async () => {
-      await axios.post(`${API_URL}/user/logout`, {withCredentials: true})
+      await axios.post(`${API_URL}/user/logout`, {}, {withCredentials: true})
       setCurrentUser(null)
       setIsLoginSuccess(false)
       setIsSignupSuccess(false)
@@ -134,7 +151,7 @@ function App() {
 
       if (comments) {
          console.log(comment);
-         if (!comment?.parent.id) {
+         if (!comment?.parent?.id) {
             setComments([comment, ...comments]);
          } else {
             const newCommments = [...comments]
@@ -170,9 +187,9 @@ function App() {
       };
     }, [addNewCommentToState]);
 
-    useEffect(() => {
-      console.log(comments);
-    }, [comments])
+   //  useEffect(() => {
+   //    console.log(comments);
+   //  }, [comments])
 
 
    useEffect(() => {
@@ -181,8 +198,18 @@ function App() {
    }, [])
 
    useEffect(() => {
+      fetchCommentsNextPage({shouldCollapse: true})
+   }, [commentSortField, isCommentSortAscending])
+
+   useEffect(() => {
       isLoginSuccess && fetchCurrentUser()
    }, [isLoginSuccess])
+
+   useEffect(() => {
+      if ((commentsDisplayedPage !== 1) && (commentsDisplayedPage > commentsLastPage)) {
+         fetchCommentsNextPage()
+      }
+   }, [commentsDisplayedPage])
 
 
    //scroll to anchor on reload
@@ -194,14 +221,20 @@ function App() {
 
    return (
       <>
-         <Navbar isSignupSuccess={isSignupSuccess} />
-         {
+         {/* <Navbar isSignupSuccess={isSignupSuccess} /> */}
+         
 
-         }
          <Comments
             comments={comments}
+            totalComments={totalComments}
             fetchCommentsNextPage={fetchCommentsNextPage}
             isCommentsLoading={isCommentsLoading}
+            commentSortField={commentSortField}
+            setCommentSortField={setCommentSortField}
+            isCommentSortAscending={isCommentSortAscending}
+            setIsCommentSortAscending={setIsCommentSortAscending}
+            commentsDisplayedPage={commentsDisplayedPage}
+            setCommentsDisplayedPage={setCommentsDisplayedPage}
          />
          {
             currentUser ?

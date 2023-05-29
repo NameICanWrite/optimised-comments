@@ -24,7 +24,7 @@ export class Comment extends BaseEntity {
   @ManyToOne(() => User, (user: User) => user.comments,
   //  {eager: true}
    )
-  user: User
+  user: Partial<User>
 }
 
 

@@ -31,6 +31,7 @@ exports.passportOptionsLogin = {
 };
 exports.passportJwtStrategyLoginWithActivation = new passport_jwt_1.Strategy(exports.passportOptionsLogin, async ({ userId }, done) => {
     try {
+        console.log(userId);
         let user;
         let cachedUser = await redis_1.default.get(`user:${userId}`);
         if (cachedUser) {

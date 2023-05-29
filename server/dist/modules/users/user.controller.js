@@ -25,6 +25,7 @@ const redis_1 = __importDefault(require("../../config/redis"));
 const jwt_utils_1 = require("../../utils/jwt.utils");
 const try_catch_decorator_1 = __importDefault(require("../../utils/try-catch.decorator"));
 const email_queue_1 = require("./email.queue");
+const scanAndDelete_1 = require("../../utils/redis/scanAndDelete");
 dotenv_1.default.config();
 let UserController = class UserController {
     constructor() { }
@@ -119,6 +120,7 @@ let UserController = class UserController {
         const url = await (0, firebase_1.uploadAvatarToFirebase)(avatar, req.user.id);
         const user = await user_service_1.default.setAvatar(req.user.id, url);
         await redis_1.default.setEx(`user:${req.user.id}`, 3600, JSON.stringify(user));
+        await (0, scanAndDelete_1.scanAndDelete)('comments:*');
         return { url, message: 'Avatar has been changed' };
     }
     async setHomepage(req, res) {

@@ -28,7 +28,7 @@ class CommentService {
       .where('comment.parent IS NULL')
       
       .leftJoinAndSelect('comment.parent', 'parent')
-      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoin('comment.user', 'user')
       
       .addOrderBy(sortField, isSortAscending ? 'ASC' : 'DESC')
       
@@ -51,7 +51,7 @@ class CommentService {
 
     // local skip and take due to https://github.com/typeorm/typeorm/issues/5670
     const skip = (page - 1) * limit
-    const comments = (await queryBuilder.getMany()).slice(skip, skip + limit)
+    let comments = (await queryBuilder.getMany())?.slice(skip, skip + limit)
     const totalComments = await Comment.count({ where: { parent: IsNull() } })
     
 

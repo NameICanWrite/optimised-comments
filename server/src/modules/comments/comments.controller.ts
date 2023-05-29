@@ -9,6 +9,7 @@ import { Set } from 'typescript';
 import WebSocket from 'ws';
 import redisClient from '../../config/redis';
 import { scanAndDelete } from '../../utils/redis/scanAndDelete';
+import { DeepPartial } from 'typeorm';
 
 
 @TryCatch
@@ -63,15 +64,14 @@ export class CommentController {
     return comments
   }
 
-  async createComment(req: Request<{id: string}, any, IComment> & {user: User}) {
+  async createComment(req: Request<{id: string}, any, {parentId: number, text: string}> & {user: User}) {
     const {parentId, text} = req.body
     const newComment = await commentService.create({text, parent: parentId ? {id: parentId} : undefined}, req.user as User)
-    delete newComment.user
-    delete newComment.parent
+    delete newComment.user?.password
     newComment.replies = []
-    req.user.comments.push(newComment)
-    console.log(req.user);
-    await redisClient.setEx(`user:${req.user.id}`, 3600, JSON.stringify(req.user))
+    if (!req.user.comments) req.user.comments = []
+    
+
 
     scanAndDelete('comments:*')
     
@@ -82,6 +82,9 @@ export class CommentController {
       id: req.user.id, 
       email: req.user.email
     }
+
+    req.user.comments.push(newComment)
+    await redisClient.setEx(`user:${req.user.id}`, 3600, JSON.stringify(req.user))
     
     // Emit a WebSocket event to notify clients about the new comment
     const message = JSON.stringify({

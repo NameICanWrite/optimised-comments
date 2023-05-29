@@ -5,6 +5,7 @@ const typeorm_1 = require("typeorm");
 const consts_1 = require("../../consts");
 class CommentService {
     async findAll({ page, limit, sortField, isSortAscending }) {
+        var _a;
         const queryBuilder = (0, typeorm_1.getConnection)().createQueryBuilder();
         queryBuilder
             .select([
@@ -19,7 +20,7 @@ class CommentService {
             .from(Comment_1.Comment, 'comment')
             .where('comment.parent IS NULL')
             .leftJoinAndSelect('comment.parent', 'parent')
-            .leftJoinAndSelect('comment.user', 'user')
+            .leftJoin('comment.user', 'user')
             .addOrderBy(sortField, isSortAscending ? 'ASC' : 'DESC');
         for (let i = 1; i <= consts_1.REPLIES_DEEPNESS_DISPLAYED; i++) {
             const alias = `replies${i}`;
@@ -36,7 +37,7 @@ class CommentService {
                 .addOrderBy(`${alias}.createdAt`, 'DESC');
         }
         const skip = (page - 1) * limit;
-        const comments = (await queryBuilder.getMany()).slice(skip, skip + limit);
+        let comments = (_a = (await queryBuilder.getMany())) === null || _a === void 0 ? void 0 : _a.slice(skip, skip + limit);
         const totalComments = await Comment_1.Comment.count({ where: { parent: (0, typeorm_1.IsNull)() } });
         if (!comments)
             comments = [];

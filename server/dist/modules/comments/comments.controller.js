@@ -48,14 +48,13 @@ let CommentController = class CommentController {
         return comments;
     }
     async createComment(req) {
+        var _a;
         const { parentId, text } = req.body;
         const newComment = await comments_service_1.default.create({ text, parent: parentId ? { id: parentId } : undefined }, req.user);
-        delete newComment.user;
-        delete newComment.parent;
+        (_a = newComment.user) === null || _a === void 0 ? true : delete _a.password;
         newComment.replies = [];
-        req.user.comments.push(newComment);
-        console.log(req.user);
-        await redis_1.default.setEx(`user:${req.user.id}`, 3600, JSON.stringify(req.user));
+        if (!req.user.comments)
+            req.user.comments = [];
         (0, scanAndDelete_1.scanAndDelete)('comments:*');
         newComment.user = {
             avatarUrl: req.user.avatarUrl,
@@ -63,6 +62,8 @@ let CommentController = class CommentController {
             id: req.user.id,
             email: req.user.email
         };
+        req.user.comments.push(newComment);
+        await redis_1.default.setEx(`user:${req.user.id}`, 3600, JSON.stringify(req.user));
         const message = JSON.stringify({
             event: 'newComment',
             data: newComment,

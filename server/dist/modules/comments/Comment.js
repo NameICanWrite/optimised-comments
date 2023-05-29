@@ -38,7 +38,7 @@ __decorate([
 ], Comment.prototype, "replies", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.comments),
-    __metadata("design:type", User_1.User)
+    __metadata("design:type", Object)
 ], Comment.prototype, "user", void 0);
 Comment = Comment_1 = __decorate([
     (0, typeorm_1.Entity)(consts_1.entityTypes.COMMENTS)

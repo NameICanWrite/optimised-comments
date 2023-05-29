@@ -1,8 +1,9 @@
-import { Response, Request } from 'express'
+import { Response, Request, CookieOptions } from 'express'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 
-const jwtCookieOptions = {
+
+const jwtCookieOptions: CookieOptions = {
   httpOnly: true,
 }
 if (process.env.NODE_ENV === 'production') {
@@ -13,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-export const addJwtCookie = (res: Response, payload) => {
+export const addJwtCookie = (res: Response, payload: any) => {
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_TOKEN_EXPIRES_IN
   })

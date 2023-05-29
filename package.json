@@ -12,6 +12,7 @@
     "dev": "concurrently \"npm start --prefix client\" \"npm run server --prefix server\""
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.1",
     "eslint": "^8.22.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^17.0.0",

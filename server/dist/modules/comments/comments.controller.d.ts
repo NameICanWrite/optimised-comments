@@ -1,4 +1,3 @@
-import { IComment } from './comments.type';
 import { Response, Request, NextFunction } from 'express';
 import { Comment } from './Comment';
 import { User } from '../users/User';
@@ -15,7 +14,10 @@ export declare class CommentController {
     }, res: Response, next: NextFunction): Promise<any>;
     createComment(req: Request<{
         id: string;
-    }, any, IComment> & {
+    }, any, {
+        parentId: number;
+        text: string;
+    }> & {
         user: User;
     }): Promise<Comment>;
 }

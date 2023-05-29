@@ -15,6 +15,7 @@ import redisClient from '../../config/redis';
 import { addJwtCookie, removeJwtCookie } from '../../utils/jwt.utils';
 import TryCatch from '../../utils/try-catch.decorator';
 import { emailQueue } from './email.queue';
+import { scanAndDelete } from '../../utils/redis/scanAndDelete';
 
 dotenv.config()
 
@@ -137,6 +138,8 @@ export class UserController {
     const user = await userService.setAvatar(req.user.id, url)
 
     await redisClient.setEx(`user:${req.user.id}`, 3600, JSON.stringify(user))
+    await scanAndDelete('comments:*')
+
     return {url, message: 'Avatar has been changed'}
   }
 
@@ -145,7 +148,6 @@ export class UserController {
     const { homepage } = req.body
     await Joi.string().uri().required().validateAsync(homepage)
     const user = await userService.setHomepage(req.user.id, homepage)
-
     await redisClient.setEx(`user:${req.user.id}`, 3600, JSON.stringify(user))
     return 'Homepage changed successfully'
   }
