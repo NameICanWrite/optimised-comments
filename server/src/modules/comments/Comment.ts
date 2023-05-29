@@ -1,7 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, getMetadataArgsStorage } from 'typeorm';
 import { User } from '../users/User';
 import { entityTypes } from '../../consts';
-import { number } from 'joi';
 
 
 @Entity(entityTypes.COMMENTS)
@@ -18,7 +17,8 @@ export class Comment extends BaseEntity {
   @ManyToOne(() => Comment, /*{ onDelete: 'CASCADE' }*/)
   parent: Comment;
 
-  @OneToMany(() => Comment, comment => comment.parent)
+  
+  @OneToMany(() => Comment, comment => comment.parent, {cascade: true})
   replies: Comment[];
 
   @ManyToOne(() => User, (user: User) => user.comments,

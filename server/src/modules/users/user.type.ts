@@ -1,7 +1,7 @@
 import { Comment } from "../comments/Comment";
 
 export interface IUser {
-  id?: string;
+  id?: number;
   email: string;
   password: string;
   comments?: Comment[];

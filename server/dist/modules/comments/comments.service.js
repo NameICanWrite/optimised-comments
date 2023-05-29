@@ -14,13 +14,13 @@ class CommentService {
             'user.id',
             'user.name',
             'user.email',
-            'user.avatar',
+            'user.avatarUrl',
         ])
             .from(Comment_1.Comment, 'comment')
-            .andWhere('comment.parent IS NULL')
+            .where('comment.parent IS NULL')
             .leftJoinAndSelect('comment.parent', 'parent')
-            .leftJoin('comment.user', 'user')
-            .orderBy(sortField, isSortAscending ? 'ASC' : 'DESC');
+            .leftJoinAndSelect('comment.user', 'user')
+            .addOrderBy(sortField, isSortAscending ? 'ASC' : 'DESC');
         for (let i = 1; i <= consts_1.REPLIES_DEEPNESS_DISPLAYED; i++) {
             const alias = `replies${i}`;
             const prevAlias = i === 1 ? 'comment' : `replies${i - 1}`;
@@ -31,10 +31,12 @@ class CommentService {
                 `user_${alias}.id`,
                 `user_${alias}.name`,
                 `user_${alias}.email`,
-                `user_${alias}.avatar`,
-            ]);
+                `user_${alias}.avatarUrl`,
+            ])
+                .addOrderBy(`${alias}.createdAt`, 'DESC');
         }
-        const comments = await queryBuilder.getMany();
+        const skip = (page - 1) * limit;
+        const comments = (await queryBuilder.getMany()).slice(skip, skip + limit);
         const totalComments = await Comment_1.Comment.count({ where: { parent: (0, typeorm_1.IsNull)() } });
         if (!comments)
             comments = [];
@@ -43,7 +45,6 @@ class CommentService {
     }
     async create(comment, user) {
         comment.user = user;
-        console.log(comment);
         const toBeSaved = await Comment_1.Comment.save(comment);
         return toBeSaved;
     }

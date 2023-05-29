@@ -12,17 +12,11 @@ export declare class CommentController {
             sortField: string;
             isSortAscending: string;
         };
-    }, res: Response, next: NextFunction): Promise<{
-        totalComments: number;
-        comments: any[];
-        page: number;
-        hasNextPage: boolean;
-    }>;
+    }, res: Response, next: NextFunction): Promise<any>;
     createComment(req: Request<{
         id: string;
     }, any, IComment> & {
         user: User;
-        res: Response;
     }): Promise<Comment>;
 }
 declare const commentController: CommentController;

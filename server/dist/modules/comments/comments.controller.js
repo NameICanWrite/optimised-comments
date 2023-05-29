@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentController = void 0;
 const comments_service_1 = __importDefault(require("./comments.service"));
 const try_catch_decorator_1 = __importDefault(require("../../utils/try-catch.decorator"));
+const redis_1 = __importDefault(require("../../config/redis"));
+const scanAndDelete_1 = require("../../utils/redis/scanAndDelete");
 let CommentController = class CommentController {
     constructor() { }
     async getAllComments(req, res, next) {
@@ -24,17 +26,53 @@ let CommentController = class CommentController {
             'user.email',
             'comment.createdAt',
         ];
-        return await comments_service_1.default.findAll({
-            page: page ? parseInt(page) : 1,
-            limit: limit ? parseInt(limit) : 100000,
-            sortField: allowedSortFields.includes(sortField) ? sortField : 'comment.createdAt',
-            isSortAscending: isSortAscending === 'true',
+        const pageInt = page ? parseInt(page) : 1;
+        const limitInt = limit ? parseInt(limit) : 100000;
+        sortField = allowedSortFields.includes(sortField) ? sortField : 'comment.createdAt';
+        const isSortAscendingBool = isSortAscending === 'true';
+        const cacheKey = `comments:page=${pageInt}` +
+            `&limit=${limitInt}` +
+            `&isSortAscending=${isSortAscendingBool}` +
+            `&${sortField}`;
+        const cachedComments = await redis_1.default.get(cacheKey);
+        if (cachedComments) {
+            return JSON.parse(cachedComments);
+        }
+        const comments = await comments_service_1.default.findAll({
+            page: pageInt,
+            limit: limitInt,
+            sortField,
+            isSortAscending: isSortAscendingBool,
         });
+        await redis_1.default.setEx(cacheKey, 3600, JSON.stringify(comments));
+        return comments;
     }
     async createComment(req) {
         const { parentId, text } = req.body;
-        const comment = await comments_service_1.default.create({ text, parent: parentId ? { id: parentId } : undefined }, req.user);
-        return comment;
+        const newComment = await comments_service_1.default.create({ text, parent: parentId ? { id: parentId } : undefined }, req.user);
+        delete newComment.user;
+        delete newComment.parent;
+        newComment.replies = [];
+        req.user.comments.push(newComment);
+        console.log(req.user);
+        await redis_1.default.setEx(`user:${req.user.id}`, 3600, JSON.stringify(req.user));
+        (0, scanAndDelete_1.scanAndDelete)('comments:*');
+        newComment.user = {
+            avatarUrl: req.user.avatarUrl,
+            name: req.user.name,
+            id: req.user.id,
+            email: req.user.email
+        };
+        const message = JSON.stringify({
+            event: 'newComment',
+            data: newComment,
+        });
+        const wsClients = req.app.get('wsClients');
+        wsClients.forEach((client) => {
+            console.log('sending socket message...');
+            client.send(message);
+        });
+        return newComment;
     }
 };
 CommentController = __decorate([

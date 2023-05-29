@@ -1,8 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, RequestHandler } from 'express';
 import { userController } from './user.controller';
-import { AddAuthToken, authAndGetUser } from './auth.middleware';
+import { authAndGetUser } from './auth.middleware';
 import TryCatch from '../../utils/try-catch.decorator';
 import validator from '../../utils/validation/generic.validator';
+import { removeJwtCookie } from '../../utils/jwt.utils';
+import redisClient from '../../config/redis';
 
 const router: Router = Router();
 
@@ -14,34 +16,24 @@ const router: Router = Router();
 //login-signup functionality
 router.get('/activate/:token', 
   authAndGetUser,
-  userController.activateUserAndRedirectToFrontend
+  userController.redirectIfUserExists
 );
 router.post('/signup-and-send-activation-email', 
   validator.isBodyValidEntity('signup'),
-  TryCatch(userController.signUpAndSendActivationEmail)
+  userController.signUpAndSendActivationEmail
 )
 router.post('/login', 
   validator.isBodyValidEntity('login'),
-  AddAuthToken(userController.login)
+  userController.login
 )
+router.post('/logout', authAndGetUser, userController.logout)
 
 //edit user functionality
-router.post('/send-password-reset-code', 
-  validator.isBodyValidEntity('withEmail'),
-  TryCatch(userController.sendResetPasswordCodeEmail)
-)
-router.post('/reset-password', 
-  validator.isBodyValidEntity('resetPassword'),
-  TryCatch(userController.resetPasswordWithCode)
-)
-router.post('/set-avatar', authAndGetUser, TryCatch(userController.setAvatar))
-router.post('/set-homepage', authAndGetUser, TryCatch(userController.setHomepage))
+router.post('/set-avatar', authAndGetUser, userController.setAvatar)
+router.post('/set-homepage', authAndGetUser, userController.setHomepage)
 
 //fetch functionality
-router.get('/current', authAndGetUser, TryCatch(userController.getCurrentUser))
-router.get('/current/comments', authAndGetUser, TryCatch(userController.getCurrentUserComments))
+router.get('/current', authAndGetUser, userController.getCurrentUser)
+router.get('/current/comments', authAndGetUser, userController.getCurrentUserComments)
 
-
-// router.post('/change-password-secure', authAndGetUser, TryCatch(userController.changePasswordSecure.bind(userController)))
-// router.post('/change-password', authAndGetUser, TryCatch(userController.changePassword.bind(userController)))
 export default router;

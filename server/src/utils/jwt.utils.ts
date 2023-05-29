@@ -31,13 +31,3 @@ export const removeJwtCookie = (res: Response) => {
 
   res.clearCookie('jwt', jwtCookieOptions)
 }
-
-
-export async function decodeAuthToken(req, res, next) {
-  let token = req.cookies.jwt
-  // if(!token){
-  //   return res.status(400).send('No auth token found')
-  // }
-  if (token) req.auth = await promisify(jwt.verify)(token, process.env.JWT_SECRET).catch();
-  next()
-}

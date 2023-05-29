@@ -3,9 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodeAuthToken = exports.removeJwtCookie = exports.addJwtCookie = void 0;
+exports.removeJwtCookie = exports.addJwtCookie = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const util_1 = require("util");
 const jwtCookieOptions = {
     httpOnly: true,
 };
@@ -31,11 +30,4 @@ const removeJwtCookie = (res) => {
     res.clearCookie('jwt', jwtCookieOptions);
 };
 exports.removeJwtCookie = removeJwtCookie;
-async function decodeAuthToken(req, res, next) {
-    let token = req.cookies.jwt;
-    if (token)
-        req.auth = await (0, util_1.promisify)(jsonwebtoken_1.default.verify)(token, process.env.JWT_SECRET).catch();
-    next();
-}
-exports.decodeAuthToken = decodeAuthToken;
 //# sourceMappingURL=jwt.utils.js.map

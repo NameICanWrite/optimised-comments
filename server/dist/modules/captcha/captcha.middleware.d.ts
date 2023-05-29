@@ -1,1 +1,1 @@
-export declare const isCaptchaSolved: Function | undefined;
+export declare const isCaptchaSolved: Function;

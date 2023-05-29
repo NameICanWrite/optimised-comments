@@ -7,16 +7,14 @@ declare class UserService {
         name: string;
         isActive: boolean;
     }): Promise<User>;
-    activate(id: number): Promise<void>;
-    changePassword(id: string, password: string): Promise<import("typeorm").UpdateResult>;
-    findById(id: string): Promise<User | null>;
+    activate(id: number): Promise<User>;
+    findById(id: number): Promise<User | null>;
     findByEmail(email: string): Promise<User | null>;
     findByName(name: string): Promise<User | null>;
-    addPasswordResetCode(email: string, code: string): Promise<void>;
-    setAvatar(id: number, avatarUrl: string): Promise<void>;
-    setHomepage(id: number, homepage: string): Promise<void>;
-    delete(id: string): Promise<void>;
-    isUserExists(id: string): Promise<boolean>;
+    setAvatar(id: number, avatarUrl: string): Promise<User>;
+    setHomepage(id: number, homepage: string): Promise<User>;
+    delete(id: number): Promise<void>;
+    isUserExists(id: number): Promise<boolean>;
 }
 declare const userService: UserService;
 export default userService;

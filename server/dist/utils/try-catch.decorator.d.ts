@@ -1,1 +1,1 @@
-export default function TryCatch(target: Function): Function | undefined;
+export default function TryCatch(target: Function): Function;

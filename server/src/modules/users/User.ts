@@ -27,12 +27,6 @@ export class User extends BaseEntity {
   @Column()
   isActive: boolean;
 
-  @Column({default: '0'})
-  passwordResetCode: string
-
-  @Column({default: '0'})
-  passwordResetCodeExpiresAt: string
-
   @OneToMany(() => Comment, (comment: Comment) => comment.user)
   comments: Array<Comment>;
 }

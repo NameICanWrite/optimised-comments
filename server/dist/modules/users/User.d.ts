@@ -8,7 +8,5 @@ export declare class User extends BaseEntity {
     homepage: string;
     password: string;
     isActive: boolean;
-    passwordResetCode: string;
-    passwordResetCodeExpiresAt: string;
     comments: Array<Comment>;
 }

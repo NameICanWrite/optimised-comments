@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const { data, text } = svg_captcha_1.default.create();
     const { id } = await Captcha_1.Captcha.save({ text });
     console.log('captcha created: ', `id: ${id}, text: ${text}`);
-    return res.send({ id, image: data });
+    return res.send({ id, svg: data });
 });
 exports.default = router;
 //# sourceMappingURL=captcha.route.js.map

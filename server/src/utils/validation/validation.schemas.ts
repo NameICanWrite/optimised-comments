@@ -1,13 +1,17 @@
 import Joi from "joi"
-import UserService from "../../modules/users/user.service"
 import { entityTypes } from "../../consts"
+import dotenv from 'dotenv'
+dotenv.config()
 
 const validationSchemas = {
-  [entityTypes.COMMENTS]: Joi.object({
+  [entityTypes.COMMENTS]: process.env.IS_CAPTCHA_ON ? Joi.object({
       captchaText: Joi.string().trim().required(),
       captchaId: Joi.number().required(),
       text: Joi.string().trim().required(),
       parentId: Joi.number(),
+  }) : Joi.object({
+    text: Joi.string().trim().required(),
+    parentId: Joi.number(),
   }),
   signup: Joi.object({
     email: Joi.string().trim().email().required(),

@@ -11,7 +11,7 @@ function TryCatchClass(target) {
     methodNames.forEach((methodName) => {
         const originalMethod = target.prototype[methodName];
         if (!(typeof target.prototype[methodName] === 'function'))
-            return;
+            return () => { };
         const isAsync = target.prototype[methodName].constructor.name === 'AsyncFunction';
         isAsync && (target.prototype[methodName] = async function (req, res, next) {
             try {
@@ -29,7 +29,7 @@ function TryCatchClass(target) {
 }
 function TryCatchFunction(target) {
     if (!(typeof target === 'function' && target.constructor.name === 'AsyncFunction'))
-        return;
+        return () => { };
     const originalTarget = target;
     target = async function (req, res, next) {
         try {
@@ -49,6 +49,7 @@ function TryCatch(target) {
         return TryCatchClass(target);
     if (isAsyncFunction(target))
         return TryCatchFunction(target);
+    return () => { };
 }
 exports.default = TryCatch;
 //# sourceMappingURL=try-catch.decorator.js.map

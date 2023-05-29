@@ -5,24 +5,15 @@ import { Comment } from '../modules/comments/Comment';
 import { User } from '../modules/users/User';
 import { createConnection, DataSourceOptions } from 'typeorm';
 
-function getSSLConfig(env: string) {
-  const configs: { [key: string]: boolean | { [key: string]: boolean } } = {
-    production: { rejectUnauthorized: true },
-    local: false,
-    deploy: { rejectUnauthorized: false }
-  };
-  if (!configs[env] === undefined) {
-    throw new Error('Set network in your .env file');
-  }
-  return configs[env];
-}
-
 const connectDB = async () => {
   try {
     const options: DataSourceOptions = {
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
-      logging: ['query', 'error'],
+      logging: [
+        'error', 
+        // 'query'
+      ],
       type: 'postgres',
       entities: [Comment, User, Captcha],
       database: process.env.DB_NAME,

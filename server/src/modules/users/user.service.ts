@@ -16,15 +16,10 @@ class UserService {
   }
 
   async activate(id: number) {
-    await User.update(id, {isActive: true})
+    return await User.save({id, isActive: true})
   }
 
-  async changePassword(id: string, password: string) {
-    const user = await User.update(id, {password, passwordResetCode: '0', passwordResetCodeExpiresAt: '0'})
-    return user
-  }
-
-  async findById(id: string) {
+  async findById(id: number) {
     const user = await User.findOne({where: {id}, relations: ['comments']})
     return user
   }
@@ -37,23 +32,20 @@ class UserService {
     const user = await User.findOne({where: {name}, relations: ['comments']})
     return user
   }
-  async addPasswordResetCode(email: string, code: string) {
-    await User.update({email}, {passwordResetCode: code, passwordResetCodeExpiresAt: (Date.now() + 60 * 1000 * 10).toString()})
-  }
 
   async setAvatar(id: number, avatarUrl: string) {
-    await User.update(id, {avatarUrl})
+    return await User.save({id, avatarUrl})
   }
 
   async setHomepage(id: number, homepage: string) {
-    await User.update(id, {homepage})
+    return await User.save({id, homepage})
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await User.delete(id)
   }
 
-  async isUserExists(id: string) {
+  async isUserExists(id: number) {
     return !!(await this.findById(id))
   }
 }

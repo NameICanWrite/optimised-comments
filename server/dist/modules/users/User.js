@@ -44,14 +44,6 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "isActive", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: '0' }),
-    __metadata("design:type", String)
-], User.prototype, "passwordResetCode", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: '0' }),
-    __metadata("design:type", String)
-], User.prototype, "passwordResetCodeExpiresAt", void 0);
-__decorate([
     (0, typeorm_1.OneToMany)(() => Comment_1.Comment, (comment) => comment.user),
     __metadata("design:type", Array)
 ], User.prototype, "comments", void 0);

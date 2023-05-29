@@ -11,11 +11,7 @@ class UserService {
         return saved;
     }
     async activate(id) {
-        await User_1.User.update(id, { isActive: true });
-    }
-    async changePassword(id, password) {
-        const user = await User_1.User.update(id, { password, passwordResetCode: '0', passwordResetCodeExpiresAt: '0' });
-        return user;
+        return await User_1.User.save({ id, isActive: true });
     }
     async findById(id) {
         const user = await User_1.User.findOne({ where: { id }, relations: ['comments'] });
@@ -29,14 +25,11 @@ class UserService {
         const user = await User_1.User.findOne({ where: { name }, relations: ['comments'] });
         return user;
     }
-    async addPasswordResetCode(email, code) {
-        await User_1.User.update({ email }, { passwordResetCode: code, passwordResetCodeExpiresAt: (Date.now() + 60 * 1000 * 10).toString() });
-    }
     async setAvatar(id, avatarUrl) {
-        await User_1.User.update(id, { avatarUrl });
+        return await User_1.User.save({ id, avatarUrl });
     }
     async setHomepage(id, homepage) {
-        await User_1.User.update(id, { homepage });
+        return await User_1.User.save({ id, homepage });
     }
     async delete(id) {
         await User_1.User.delete(id);

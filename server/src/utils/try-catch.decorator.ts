@@ -12,7 +12,7 @@ function TryCatchClass(target: Function) {
     const methodNames = Object.getOwnPropertyNames(target.prototype)
     methodNames.forEach((methodName) => {
         const originalMethod = target.prototype[methodName]
-        if (!(typeof target.prototype[methodName] === 'function')) return
+        if (!(typeof target.prototype[methodName] === 'function')) return () => {}
         const isAsync = target.prototype[methodName].constructor.name === 'AsyncFunction'
 
         isAsync && (target.prototype[methodName] = async function (req: Request, res: Response, next: NextFunction) {
@@ -30,7 +30,7 @@ function TryCatchClass(target: Function) {
 }
 
 function TryCatchFunction(target: Function) {
-    if (!(typeof target === 'function' && target.constructor.name === 'AsyncFunction')) return
+    if (!(typeof target === 'function' && target.constructor.name === 'AsyncFunction')) return () => {}
     const originalTarget = target
     target = async function (req: Request, res: Response, next: NextFunction) {
         try {
@@ -49,6 +49,8 @@ function TryCatchFunction(target: Function) {
 export default function TryCatch(target: Function) {
     if (isClass(target)) return TryCatchClass(target)
     if (isAsyncFunction(target)) return TryCatchFunction(target)
+    
+    return () => {} 
 }
 
 

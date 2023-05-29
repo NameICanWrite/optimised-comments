@@ -11,21 +11,7 @@ class CommentService {
   async findAll({ page, limit, sortField, isSortAscending }: {
     page: number, limit: number, sortField: string, isSortAscending: boolean
   }) {
-
-    // let comments = await Comment.find({
-    //   where: {parent: IsNull()},
-    //   relations: [
-    //     'parent', 
-    //     'user', 
-    //     `replies${'.replies'.repeat(REPLIES_DEEPNESS_DISPLAYED - 1)}`
-    //     // 'replies'
-    //   ],
-    //   relationLoadStrategy: "join",
-    //   select: ['createdAt', 'text', 'parent', 'replies', 'id'],
-    //   order: {[sortField]: isSortAscending ? 'ASC' : 'DESC' },
-    //   skip: (page - 1) * limit,
-    //   take: limit
-    // })
+    
 
     const queryBuilder = getConnection().createQueryBuilder();
     queryBuilder
@@ -36,13 +22,16 @@ class CommentService {
         'user.id',
         'user.name',
         'user.email',
-        'user.avatar',
+        'user.avatarUrl',
       ])
       .from(Comment, 'comment')
-      .andWhere('comment.parent IS NULL')
+      .where('comment.parent IS NULL')
+      
       .leftJoinAndSelect('comment.parent', 'parent')
-      .leftJoin('comment.user', 'user')
-      .orderBy(sortField, isSortAscending ? 'ASC' : 'DESC')
+      .leftJoinAndSelect('comment.user', 'user')
+      
+      .addOrderBy(sortField, isSortAscending ? 'ASC' : 'DESC')
+      
 
     for (let i = 1; i <= REPLIES_DEEPNESS_DISPLAYED; i++) {
       const alias = `replies${i}`;
@@ -54,11 +43,17 @@ class CommentService {
           `user_${alias}.id`,
           `user_${alias}.name`,
           `user_${alias}.email`,
-          `user_${alias}.avatar`,
+          `user_${alias}.avatarUrl`,
         ])
+        //order replies
+        .addOrderBy(`${alias}.createdAt`, 'DESC')
     }
-    const comments = await queryBuilder.getMany();
+
+    // local skip and take due to https://github.com/typeorm/typeorm/issues/5670
+    const skip = (page - 1) * limit
+    const comments = (await queryBuilder.getMany()).slice(skip, skip + limit)
     const totalComments = await Comment.count({ where: { parent: IsNull() } })
+    
 
     if (!comments) comments = []
     const hasNextPage = totalComments > page * limit
@@ -67,7 +62,6 @@ class CommentService {
 
   async create(comment: IComment, user: User) {
     comment.user = user
-    console.log(comment);
     const toBeSaved = await Comment.save(comment as DeepPartial<Comment>)
     return toBeSaved
   }

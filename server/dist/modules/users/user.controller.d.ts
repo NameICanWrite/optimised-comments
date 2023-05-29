@@ -3,45 +3,30 @@ import { User } from './User';
 import { UploadedFile } from 'express-fileupload';
 export declare class UserController {
     constructor();
-    signup(req: Request, res: Response, next: NextFunction): Promise<{
-        resBody: string;
-        tokenPayload?: undefined;
-    } | {
-        resBody: string;
-        tokenPayload: {
-            userId: number;
-        };
-    }>;
     login(req: Request<any, any, {
         email: string;
         password: string;
-    }>, res: Response, next: NextFunction): Promise<{
-        resBody: string;
-        tokenPayload?: undefined;
-    } | {
-        resBody: User;
-        tokenPayload: {
-            userId: number;
-        };
-    }>;
-    activateUserAndRedirectToFrontend(req: Request, res: Response, next: NextFunction): Promise<void>;
-    signUpAndSendActivationEmail(req: Request, res: Response, next: NextFunction): Promise<"Confirmation email sent" | {
-        resBody: string;
-    }>;
-    sendResetPasswordCodeEmail(req: Request, res: Response, next: NextFunction): Promise<"Email with code sent" | {
-        resBody: string;
-    }>;
-    resetPasswordWithCode(req: Request<any, any, {
+    }>, res: Response, next: NextFunction): Promise<"User doesnt exist" | "Password incorrect" | "Visit your email and activate user (user is inactive)" | {
+        password: undefined;
+        id: number;
         email: string;
-        code: string;
-        newPassword: string;
-    }>, res: Response, next: NextFunction): Promise<"User doesnt exist" | "Code invalid or has expired" | "Password changed successfully!">;
+        name: string;
+        avatarUrl: string;
+        homepage: string;
+        isActive: boolean;
+        comments: import("../comments/Comment").Comment[];
+    }>;
+    redirectIfUserExists(req: Request & {
+        user: User;
+    }, res: Response, next: NextFunction): Promise<void>;
+    signUpAndSendActivationEmail(req: Request, res: Response, next: NextFunction): Promise<"User email already exists" | "User name already exists" | "Confirmation email sent">;
+    logout(req: Request & {
+        user: User;
+    }, res: Response): Promise<void>;
     getCurrentUser(req: Request & {
         user: User;
     }, res: Response): Promise<{
         password: undefined;
-        passwordResetCode: undefined;
-        passwordResetCodeExpiresAt: undefined;
         id: number;
         email: string;
         name: string;
@@ -53,17 +38,6 @@ export declare class UserController {
     getCurrentUserComments(req: Request & {
         user: User;
     }, res: Response): Promise<import("../comments/Comment").Comment[]>;
-    changePasswordSecure(req: Request<any, any, {
-        oldPassword: string;
-        newPassword: string;
-    }> & {
-        user: User;
-    }, res: Response): Promise<"Old password incorrect" | "Password changed successfully">;
-    changePassword(req: Request<any, any, {
-        newPassword: string;
-    }> & {
-        user: User;
-    }, res: Response): Promise<string>;
     setAvatar(req: Request<any, any, any> & {
         user: User;
         files: {

@@ -9,10 +9,18 @@ import dotenv from 'dotenv'
 import AppRouter from './router';
 import connectDB from './config/database';
 import helmet from 'helmet'
+import http from 'http'
+import { createWebSocketServer } from './webSocketServer';
 dotenv.config()
 
-const app = express();
+const app = express()
+
+const server = http.createServer(app)
+const { wss, wsClients } = createWebSocketServer(server);
 app.use(helmet())
+
+app.set('wsClients', wsClients)
+
 const router = new AppRouter(app);
 // Connect to MongoDB
 connectDB();
@@ -21,7 +29,7 @@ connectDB();
 
 // Express configuration
 app.use(cors({
-  origin: [process.env.CLIENT_ROOT_URL],
+  origin: ['http://localhost:3000', process.env.CLIENT_ROOT_URL],
   methods: ["GET", "POST", "OPTIONS", "PATCH", "PUT", 'DELETE'],
   credentials: true,
   exposedHeaders: ['Authorization']
@@ -53,6 +61,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 })
 
 // eslint-disable-next-line no-console
-const server = app.listen(port, () => console.log(`Server started on port ${port}`));
+server.listen(port, () => console.log(`Server started on port ${port}`));
 
-export default server
+
