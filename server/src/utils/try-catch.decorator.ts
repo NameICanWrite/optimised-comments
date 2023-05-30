@@ -1,18 +1,19 @@
 import {NextFunction, Request, Response} from 'express'
 
-function isClass(v: Function) {
+function isClass(v: any) {
     return typeof v === 'function' && /^\s*class\s+/.test(v.toString())
 }
 
-function isAsyncFunction(target: Function) {
+function isAsyncFunction(target: any) {
     return typeof target === 'function' && target.constructor.name === 'AsyncFunction'
 }
 
-function TryCatchClass(target: new () => {})  {
+function TryCatchClass<T extends Class>(target: T) {
     const methodNames = Object.getOwnPropertyNames(target.prototype)
     methodNames.forEach((methodName) => {
         const originalMethod = target.prototype[methodName]
-        if (!(typeof target.prototype[methodName] === 'function')) return () => {}
+        if (!(typeof target.prototype[methodName] === 'function')) return () => {
+        }
         const isAsync = target.prototype[methodName].constructor.name === 'AsyncFunction'
 
         isAsync && (target.prototype[methodName] = async function (req: Request, res: Response, next: NextFunction) {
@@ -30,7 +31,9 @@ function TryCatchClass(target: new () => {})  {
 }
 
 function TryCatchFunction(target: Function) {
-    if (!(typeof target === 'function' && target.constructor.name === 'AsyncFunction')) return () => {}
+    // if (!(typeof target === 'function' && target.constructor.name === 'AsyncFunction')) {
+    //     return () => {}
+    // }
     const originalTarget = target
     target = async function (req: Request, res: Response, next: NextFunction) {
         try {
@@ -46,11 +49,17 @@ function TryCatchFunction(target: Function) {
     return target
 }
 
-export default function TryCatch(target: Function) {
-    if (isClass(target)) return TryCatchClass(target)
-    if (isAsyncFunction(target)) return TryCatchFunction(target)
+export type Function = (...args: any[]) => any
+export type Class = new (...args: any[]) => any
+export type TryCatchReturn<T> = ReturnType<typeof TryCatch<T>>
+
+export default function TryCatch<T>(target: T): T extends Function | Class ? T : () => {} {
+    if (isClass(target)) {
+        return TryCatchClass(target as Class) as TryCatchReturn<T>
+    }
+    if (isAsyncFunction(target)) {
+        return TryCatchFunction(target as Function) as TryCatchReturn<T>
+    }
     
-    return () => {} 
+    return (() => {}) as TryCatchReturn<T>
 }
-
-

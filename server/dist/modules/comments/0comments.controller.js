@@ -1,17 +1,26 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentController = void 0;
 const comments_service_1 = __importDefault(require("./comments.service"));
+const _0try_catch_decorator_1 = __importDefault(require("../../utils/0try-catch.decorator"));
 const redis_1 = __importDefault(require("../../config/redis"));
 const scanAndDelete_1 = require("../../utils/redis/scanAndDelete");
-class CommentController {
+let CommentController = class CommentController {
     constructor() { }
     async getAllComments(req, res, next) {
-        const commentReq = req;
-        let { page, limit, sortField, isSortAscending } = commentReq.query;
+        let { page, limit, sortField, isSortAscending } = req.query;
         const allowedSortFields = [
             'user.name',
             'user.email',
@@ -41,10 +50,7 @@ class CommentController {
     async createComment(req) {
         var _a;
         const { parentId, text } = req.body;
-        const newComment = await comments_service_1.default.create({
-            text,
-            parent: parentId ? { id: parentId } : undefined
-        }, req.user);
+        const newComment = await comments_service_1.default.create({ text, parent: parentId ? { id: parentId } : undefined }, req.user);
         (_a = newComment.user) === null || _a === void 0 ? true : delete _a.password;
         newComment.replies = [];
         if (!req.user.comments)
@@ -69,8 +75,12 @@ class CommentController {
         });
         return newComment;
     }
-}
+};
+CommentController = __decorate([
+    _0try_catch_decorator_1.default,
+    __metadata("design:paramtypes", [])
+], CommentController);
 exports.CommentController = CommentController;
 const commentController = new CommentController();
 exports.default = commentController;
-//# sourceMappingURL=comments.controller.js.map
+//# sourceMappingURL=0comments.controller.js.map

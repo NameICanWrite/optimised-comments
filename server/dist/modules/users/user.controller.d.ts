@@ -1,6 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import { User } from './User';
-import { UploadedFile } from 'express-fileupload';
+import { Response, Request, NextFunction } from 'express';
 export declare class UserController {
     constructor();
     login(req: Request<any, any, {
@@ -16,41 +14,26 @@ export declare class UserController {
         isActive: boolean;
         comments: import("../comments/Comment").Comment[];
     }>;
-    redirectIfUserExists(req: Request & {
-        user: User;
-    }, res: Response, next: NextFunction): Promise<void>;
+    redirectIfUserExists(req: Request, res: Response, next: NextFunction): Promise<void>;
     signUpAndSendActivationEmail(req: Request, res: Response, next: NextFunction): Promise<"User email already exists" | "User name already exists" | "Confirmation email sent">;
-    logout(req: Request & {
-        user: User;
-    }, res: Response): Promise<void>;
-    getCurrentUser(req: Request & {
-        user: User;
-    }, res: Response): Promise<{
+    logout(req: Request, res: Response): Promise<void>;
+    getCurrentUser(req: Request, res: Response): Promise<{
         password: undefined;
-        id: number;
-        email: string;
-        name: string;
-        avatarUrl: string;
-        homepage: string;
-        isActive: boolean;
-        comments: import("../comments/Comment").Comment[];
+        id?: number | undefined;
+        email?: string | undefined;
+        name?: string | undefined;
+        avatarUrl?: string | undefined;
+        homepage?: string | undefined;
+        isActive?: boolean | undefined;
+        comments?: import("../comments/Comment").Comment[] | undefined;
     }>;
-    getCurrentUserComments(req: Request & {
-        user: User;
-    }, res: Response): Promise<import("../comments/Comment").Comment[]>;
-    setAvatar(req: Request<any, any, any> & {
-        user: User;
-        files: {
-            avatar: UploadedFile;
-        };
-    }, res: Response): Promise<"Avatar is required" | "Only gif, jpg, png extensions accepted. Wrong extension." | {
+    getCurrentUserComments(req: Request, res: Response): Promise<import("../comments/Comment").Comment[]>;
+    setAvatar(req: Request, res: Response): Promise<"Avatar is required" | "Only gif, jpg, png extensions accepted. Wrong extension." | {
         url: string;
         message: string;
     }>;
     setHomepage(req: Request<any, any, {
         homepage: string;
-    }> & {
-        user: User;
-    }, res: Response): Promise<string>;
+    }>, res: Response): Promise<string>;
 }
 export declare const userController: UserController;

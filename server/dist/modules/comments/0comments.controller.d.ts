@@ -3,7 +3,15 @@ import { Comment } from './Comment';
 import { User } from '../users/User';
 export declare class CommentController {
     constructor();
-    getAllComments(req: Request, res: Response, next: NextFunction): Promise<any>;
+    getAllComments(req: Request & {
+        user: User;
+        query: {
+            page: string;
+            limit: string;
+            sortField: string;
+            isSortAscending: string;
+        };
+    }, res: Response, next: NextFunction): Promise<any>;
     createComment(req: Request<{
         id: string;
     }, any, {

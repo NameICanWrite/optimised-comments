@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import e, {Response, Request, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from './User';
 import userService from './user.service';
@@ -21,7 +21,7 @@ dotenv.config()
 
 @TryCatch
 export class UserController {
-  constructor() { }
+  constructor() {}
 
 
 
@@ -49,7 +49,7 @@ export class UserController {
   }
 
 
-  async redirectIfUserExists(req: Request & {user: User}, res: Response, next: NextFunction) {
+  async redirectIfUserExists(req: Request, res: Response, next: NextFunction) {
     if (!req.user) {
       return res.redirect(FRONTEND_PAGES.TOKEN_CONFIRMATION_FAILURE)
     }
@@ -93,25 +93,27 @@ export class UserController {
     return 'Confirmation email sent'
   }
 
-  async logout(req: Request & {user: User}, res: Response) {
-    redisClient.del(`user:${req.user.id}`)
+  async logout(req: Request, res: Response) {
+    redisClient.del(`user:${req.user?.id}`)
     removeJwtCookie(res)
     res.send()
   }
 
 
-  async getCurrentUser(req: Request & { user: User }, res: Response) {
+  async getCurrentUser(req: Request, res: Response) {
     return { ...req.user, password: undefined, }
   }
 
 
-  async getCurrentUserComments(req: Request & { user: User }, res: Response) {
-    return (req.user as User)?.comments || []
+  async getCurrentUserComments(req: Request, res: Response) {
+    return req.user?.comments || []
   }
 
 
-  async setAvatar(req: Request<any, any, any> & { user: User, files: {avatar: UploadedFile} }, res: Response) {
-    const {avatar} = req.files
+  async setAvatar(req: Request, res: Response) {
+    if (!req.user) throw new Error()
+
+    const {avatar} = req.files as {avatar: UploadedFile}
     //validate avatar
     if (!avatar) {
       res.status(400)
@@ -144,11 +146,13 @@ export class UserController {
   }
 
 
-  async setHomepage(req: Request<any, any, { homepage: string }> & { user: User }, res: Response) {
+  async setHomepage(req: Request<any, any, { homepage: string }>, res: Response) {
+    if (!req.user) throw new Error()
+
     const { homepage } = req.body
     await Joi.string().uri().required().validateAsync(homepage)
-    const user = await userService.setHomepage(req.user.id, homepage)
-    await redisClient.setEx(`user:${req.user.id}`, 3600, JSON.stringify(user))
+    const user = await userService.setHomepage(req.user?.id, homepage)
+    await redisClient.setEx(`user:${req.user?.id}`, 3600, JSON.stringify(user))
     return 'Homepage changed successfully'
   }
 }

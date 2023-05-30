@@ -1,3 +1,5 @@
+import { User as MyUser } from "./modules/users/User";
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -10,6 +12,9 @@ declare global {
       FIREBASE_PRIVATE_KEY: string
       FIREBASE_SERVER_UID: string
     }
+  }
+  namespace Express {
+    interface User extends MyUser  {}
   }
 }
 

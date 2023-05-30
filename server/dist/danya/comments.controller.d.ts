@@ -1,5 +1,4 @@
 import { Response, Request, NextFunction } from 'express';
-import { Comment } from './Comment';
 import { User } from '../users/User';
 export declare class CommentController {
     constructor();
@@ -11,7 +10,7 @@ export declare class CommentController {
         text: string;
     }> & {
         user: User;
-    }): Promise<Comment>;
+    }): Promise<any>;
 }
 declare const commentController: CommentController;
 export default commentController;

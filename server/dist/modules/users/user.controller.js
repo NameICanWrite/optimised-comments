@@ -86,7 +86,8 @@ let UserController = class UserController {
         return 'Confirmation email sent';
     }
     async logout(req, res) {
-        redis_1.default.del(`user:${req.user.id}`);
+        var _a;
+        redis_1.default.del(`user:${(_a = req.user) === null || _a === void 0 ? void 0 : _a.id}`);
         (0, jwt_utils_1.removeJwtCookie)(res);
         res.send();
     }
@@ -98,6 +99,8 @@ let UserController = class UserController {
         return ((_a = req.user) === null || _a === void 0 ? void 0 : _a.comments) || [];
     }
     async setAvatar(req, res) {
+        if (!req.user)
+            throw new Error();
         const { avatar } = req.files;
         if (!avatar) {
             res.status(400);
@@ -124,10 +127,13 @@ let UserController = class UserController {
         return { url, message: 'Avatar has been changed' };
     }
     async setHomepage(req, res) {
+        var _a, _b;
+        if (!req.user)
+            throw new Error();
         const { homepage } = req.body;
         await joi_1.default.string().uri().required().validateAsync(homepage);
-        const user = await user_service_1.default.setHomepage(req.user.id, homepage);
-        await redis_1.default.setEx(`user:${req.user.id}`, 3600, JSON.stringify(user));
+        const user = await user_service_1.default.setHomepage((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, homepage);
+        await redis_1.default.setEx(`user:${(_b = req.user) === null || _b === void 0 ? void 0 : _b.id}`, 3600, JSON.stringify(user));
         return 'Homepage changed successfully';
     }
 };

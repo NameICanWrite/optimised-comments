@@ -1,0 +1,19 @@
+version: '3.8'
+services: 
+  redis:
+    image: redis:7.0.11-alpine
+    container_name: redis
+    restart: unless-stopped
+    network_mode: bridge
+    ports: 
+      - '6379:6379'
+
+  api:
+    build: .
+    container_name: api
+    network_mode: bridge
+    depends_on:
+      - redis
+    restart: on-failure
+    ports:
+      - '5000:5000'
