@@ -221,11 +221,12 @@ function App() {
 
    return (
       <>
-         {/* <Navbar isSignupSuccess={isSignupSuccess} /> */}
+         <Navbar user={currentUser} />
          
 
          <Comments
             comments={comments}
+            currentUser={currentUser}
             totalComments={totalComments}
             fetchCommentsNextPage={fetchCommentsNextPage}
             isCommentsLoading={isCommentsLoading}

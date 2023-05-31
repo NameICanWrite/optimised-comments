@@ -8,6 +8,7 @@ import styles from './Comments.module.scss';
 import Comment from './Comment';
 import CreateCommentForm from './CreateCommentForm';
 import { COMMENTS_ON_PAGE } from '../../consts';
+import { useScrollToAnchor } from '../../utils/useScrollToAnchor.hook';
 
 export const Comments = ({
    isCommentsLoading,
@@ -22,8 +23,12 @@ export const Comments = ({
    setCommentsDisplayedPage: setPage,
    deepness = 0,
    parentId,
+   currentUser
 }) => {
    const [showCreateCommentForm, setShowCreateCommentForm] = React.useState(false)
+   
+
+   const scrollToAnchor = useScrollToAnchor()
 
    const from = (page - 1) * COMMENTS_ON_PAGE
    const to = (page - 1) * COMMENTS_ON_PAGE + COMMENTS_ON_PAGE
@@ -36,27 +41,40 @@ export const Comments = ({
       >
          {
             deepness === 0 &&
-            <div>
+            <>
+               <div>
+                  <span style={{marginLeft: '20px'}}>Sort by: </span>
+                  <button onClick={() => setCommentSortField('user.name')} className={commentSortField === 'user.name' ? 'mainButton' : ''}>
+                     User Name
+                  </button>
+                  <button onClick={() => setCommentSortField('user.email')} className={commentSortField === 'user.email' ? 'mainButton' : ''}>
+                     User Email
+                  </button>
+                  <button onClick={() => setCommentSortField('comment.createdAt')} className={commentSortField === 'comment.createdAt' ? 'mainButton' : ''}>
+                     Created At
+                  </button>
+               </div>
                <button onClick={() => setIsCommentSortAscending(!isCommentSortAscending)}>
-                  Set sort direction as {isCommentSortAscending ? 'Descending' : 'Ascending'}
+                     Set sort direction as {isCommentSortAscending ? 'Descending' : 'Ascending'}
                </button>
-               <p>Set sort field as</p>
-               <button onClick={() => setCommentSortField('user.name')} className={commentSortField === 'user.name' ? 'mainButton' : ''}>
-                  User Name
-               </button>
-               <button onClick={() => setCommentSortField('user.email')} className={commentSortField === 'user.email' ? 'mainButton' : ''}>
-                  User Email
-               </button>
-               <button onClick={() => setCommentSortField('comment.createdAt')} className={commentSortField === 'comment.createdAt' ? 'mainButton' : ''}>
-                  Created At
-               </button>
-            </div>
+               <div>
+                  <button className={`mainButton`} onClick={() => setPage(page - 1)} disabled={page === 1}>
+                     {page - 1 > 0 && `(${page - 1})`} {'<'}=prev
+                  </button>
+                  <span> current page: {page} </span>
+                  <button className={`mainButton`} onClick={() => setPage(page + 1)} disabled={!hasNextPage}>
+                     next={'>'} {hasNextPage && `(${page + 1})`}
+                  </button>
+               </div>
+               <hr />
+            </>
+
          }
-         <button onClick={() => setShowCreateCommentForm(true)}>
-            {deepness === 0 ? 'Create Comment' : 'Reply'}
-         </button>
+         {deepness === 0 && <button onClick={() => currentUser ? setShowCreateCommentForm(true) : scrollToAnchor('login')}>
+            Create Comment
+         </button>}
          {
-            showCreateCommentForm &&
+            showCreateCommentForm && currentUser &&
             <CreateCommentForm
                parentId={parentId}
                onHide={() => setShowCreateCommentForm(false)}
@@ -67,9 +85,19 @@ export const Comments = ({
             {
                deepness === 0
                   ?
-                  <>{comments.length ? comments.map((props) => <Comment deepness={deepness ? deepness + 1 : 1} key={props.id} {...props} />).slice(from, to) : ''}</>
+                  <>{comments.length ? comments.map((props) => <Comment 
+                     currentUser={currentUser} 
+                     deepness={deepness ? deepness + 1 : 1} 
+                     setShowCreateCommentForm={setShowCreateCommentForm}
+                     key={props.id} {...props} 
+                  />).slice(from, to) : ''}</>
                   :
-                  <>{comments.length ? comments.map((props) => <Comment deepness={deepness ? deepness + 1 : 1} key={props.id} {...props} />) : ''}</>
+                  <>{comments.length ? comments.map((props) => <Comment 
+                     currentUser={currentUser} 
+                     deepness={deepness ? deepness + 1 : 1} 
+                     setShowCreateCommentForm={setShowCreateCommentForm}
+                     key={props.id} {...props} 
+                  />) : ''}</>
             }
          </div>
          {isCommentsLoading && (
@@ -77,16 +105,6 @@ export const Comments = ({
                <CircularProgress />
             </div>)
          }
-         {!deepness && (
-            <div>
-               <button className={`mainButton`} onClick={() => setPage(page - 1)} disabled={page === 1}>
-                  {page - 1 > 0 && `(${page - 1})`} {'<'}=prev
-               </button>
-               <span> current page: {page} </span>
-               <button className={`mainButton`} onClick={() => setPage(page + 1)} disabled={!hasNextPage}>
-                  next={'>'} {hasNextPage && `(${page + 1})`}
-               </button>
-            </div>)}
       </section>
    );
 };

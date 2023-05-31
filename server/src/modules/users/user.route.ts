@@ -34,6 +34,5 @@ router.post('/set-homepage', authAndGetUser, userController.setHomepage)
 
 //fetch functionality
 router.get('/current', authAndGetUser, userController.getCurrentUser)
-router.get('/current/comments', authAndGetUser, userController.getCurrentUserComments)
 
 export default router;

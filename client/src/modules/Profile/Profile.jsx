@@ -18,28 +18,21 @@ export const Profile = ({user, editAvatar, editAvatarError, editHomepage, editHo
    return (
       <section id='profile' className='container'>
          <h3 className={styles.header}>User Profile</h3>
-
-         <h3>Email</h3>
-         <p>{user.email}</p>
-
-         <h3>User Name</h3>
-         <p>{user.name}</p>
-
-         <img src={user.avatarUrl || emptyAvatar} alt="avatar" />
-         <EditAvatarForm editAvatar={editAvatar}/>
+         <p>Email: <b>{user.email}</b></p>
+         <p>Username: <b>{user.name}</b></p>
+         <p>Homepage: {user.homepage ? <a href={user.homepage}>{user.homepage}</a> : 'Not set'}</p>
          <p style={{color: 'red', textAlign: 'center', width: '100%'}}>
-            {editAvatarError || ''}
+            {editHomepageError || ''}
          </p>
-
-         <h3>Homepage</h3>
-         {user.homepage ? <a href={user.homepage}>{user.homepage}</a> : <p>Not set</p>}
          <form onSubmit={onHomepageSubmit}>
             <input type="text" name='homepage' placeholder='Homepage'/>
             <button>Edit homepage</button>
          </form>
-
+         <br />
+         <img className={styles.avatar} src={user.avatarUrl || emptyAvatar} alt="avatar" />
+         <EditAvatarForm editAvatar={editAvatar}/>
          <p style={{color: 'red', textAlign: 'center', width: '100%'}}>
-            {editHomepageError || ''}
+            {editAvatarError || ''}
          </p>
 
          <button onClick={logout}>Logout</button>

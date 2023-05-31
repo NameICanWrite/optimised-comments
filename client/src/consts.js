@@ -1,4 +1,4 @@
-export const COMMENTS_ON_PAGE = 6
+export const COMMENTS_ON_PAGE = 25
 let API_URL, WEBSOCKET_API_URL
 
 const apiDomain = 'optimised-comments.onrender.com'
@@ -11,3 +11,4 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   WEBSOCKET_API_URL = `wss://${apiDomain}`
 }
 export {API_URL, WEBSOCKET_API_URL}
+

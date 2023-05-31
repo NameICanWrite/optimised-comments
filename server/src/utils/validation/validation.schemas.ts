@@ -3,14 +3,16 @@ import { entityTypes } from "../../consts"
 import dotenv from 'dotenv'
 dotenv.config()
 
+const validTagsRegex = /<(a|code|i|strong)(\s+\w+="[^"]*")*>.*<\/\1>|^[^<>]+$/;
+
 const validationSchemas = {
   [entityTypes.COMMENTS]: process.env.IS_CAPTCHA_ON ? Joi.object({
       captchaText: Joi.string().trim().required(),
       captchaId: Joi.number().required(),
-      text: Joi.string().trim().required(),
+      text: Joi.string().trim().regex(validTagsRegex).required(),
       parentId: Joi.number(),
   }) : Joi.object({
-    text: Joi.string().trim().required(),
+    text: Joi.string().trim().regex(validTagsRegex).required(),
     parentId: Joi.number(),
   }),
   signup: Joi.object({

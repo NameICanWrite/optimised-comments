@@ -6,7 +6,9 @@
 .imageUpload {
    margin: 40px auto;
 }
-
+.avatar {
+   border-radius: 20px;
+}
 .signupForm,
 .textInputs {
    max-width: 380px;
@@ -104,5 +106,17 @@
          padding: 12px 2px;
          text-align: center;
       }
+   }
+}
+
+.fileInput_hidden {
+   color: transparent;
+   width: 0;
+   height: 0;
+   border: none;
+   box-sizing: border-box;
+
+   &::file-selector-button {
+      visibility: hidden;
    }
 }

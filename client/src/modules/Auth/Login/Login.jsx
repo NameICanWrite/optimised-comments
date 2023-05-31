@@ -35,7 +35,7 @@ export const Login = ({login, loginError}) => {
 
    return (
       <section id='login' className='container'>
-         <h3 className={styles.header}>Working with POST request</h3>
+         <h3 className={styles.header}>Login</h3>
          <form className={styles.loginForm} onSubmit={formik.handleSubmit}>
             <TextFields formik={formik} />
             <input

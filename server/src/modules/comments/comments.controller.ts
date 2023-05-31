@@ -1,14 +1,10 @@
-import {IComment} from './comments.type'
-import e, {Response, Request, NextFunction} from 'express'
+import {Response, Request, NextFunction} from 'express'
 import commentService from './comments.service'
 import TryCatch from '../../utils/try-catch.decorator'
-import Joi from 'joi'
-import {Comment} from './Comment'
 import {User} from '../users/User'
 import WebSocket from 'ws'
 import redisClient from '../../config/redis'
 import {scanAndDelete} from '../../utils/redis/scanAndDelete'
-import {DeepPartial} from 'typeorm'
 import {AllCommentsReq} from './comments.type'
 
 
@@ -17,9 +13,7 @@ export class CommentController {
     constructor() {}
 
     async getAllComments(
-        req: Request,
-        res: Response,
-        next: NextFunction
+        req: Request
     ) {
         const commentReq = req as AllCommentsReq
         let {page, limit, sortField, isSortAscending} = commentReq.query

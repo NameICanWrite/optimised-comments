@@ -42,25 +42,16 @@ export default function EditAvatarForm({editAvatar}) {
   
   return (
     <form onSubmit={onSubmit} className={styles.imageUpload}>
-      <CustomInputLabel>
-        <span>Upload</span>
+      
         <input
-          className={styles.imageUpload__fileInput_hidden}
+          // className={styles.fileInput_hidden}
           accept="image/jpg, image/jpeg"
           type="file"
           onChange={onSelectFile}
           required
         />
-      </CustomInputLabel>
-      <CustomOutlinedInput
-        className={styles.imageUpload__desc}
-        value={
-          selectedFile
-            ? getFileName(selectedFile)
-            : 'Upload your photo'
-        }
-      />
-      <button>Submit Change Avatar</button>
+        <br />
+      <button className='mainButton' style={{margin: '10px auto', display: 'block'}}>Submit</button>
     </form>
   )
 }

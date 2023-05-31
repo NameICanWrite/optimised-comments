@@ -5,6 +5,7 @@ import axios from 'axios'
 export default function CreateCommentForm({ parentId, onHide }) {
   const [captcha, setCaptcha] = useState({svg: '', id: ''})
   const [createCommentError, setCreateCommentError] = useState()
+  const [text, setText] = useState('')
   const fetchCaptcha = async () => {
     const { id, svg } = (await axios.get(`${API_URL}/captcha`)).data
     setCaptcha({ id, svg })
@@ -12,6 +13,14 @@ export default function CreateCommentForm({ parentId, onHide }) {
 
   const onSubmit = async (e) => {
     e.preventDefault()
+    const validTagsRegex = /<(a|code|i|strong)(\s+\w+="[^"]*")*>.*<\/\1>|^[^<>]+$/;
+    const isValid = validTagsRegex.test(e.target.commentText.value);
+  
+    if (!isValid) {
+      setCreateCommentError("Invalid HTML tags detected");
+      return;
+    }
+
     try {
       await axios.post(`${API_URL}/comments`, {
         parentId,
@@ -37,7 +46,19 @@ export default function CreateCommentForm({ parentId, onHide }) {
       <button onClick={fetchCaptcha}>Change Captcha</button>
       <form style={{display: 'flex', flexDirection: 'column'}} onSubmit={onSubmit}>
         <input type="text" name='captcha' placeholder='Captcha' />
-        <textarea name="commentText" cols="30" rows="10"></textarea>
+        <div>
+          <button type="button" onClick={() => setText(text + '<a href="" title=""></a>')}>&lt;a&gt;</button>
+          <button type="button" onClick={() => setText(text + '<code></code>')}>&lt;code&gt;</button>
+          <button type="button" onClick={() => setText(text + '<i></i>')}>&lt;i&gt;</button>
+          <button type="button" onClick={() => setText(text + '<strong></strong>')}>&lt;strong&gt;</button>
+        </div>
+        <textarea 
+          name="commentText" 
+          cols="30" 
+          rows="10"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
         <button>Confirm</button><button type='button' onClick={onHide}>Cancel</button>
         <p style={{color: 'red', textAlign: 'center', width: '100%'}}>
           {createCommentError}

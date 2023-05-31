@@ -41,7 +41,7 @@ export const Signup = ({signup, signupError}) => {
 
    return (
       <section id='signup' className='container'>
-         <h3 className={styles.header}>Working with POST request</h3>
+         <h3 className={styles.header}>Signup</h3>
          <form className={styles.signupForm} onSubmit={formik.handleSubmit}>
             <SignupTextFields formik={formik} />
             <input
