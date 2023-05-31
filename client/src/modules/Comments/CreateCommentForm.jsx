@@ -16,8 +16,8 @@ export default function CreateCommentForm({ parentId, onHide }) {
       await axios.post(`${API_URL}/comments`, {
         parentId,
         text: e.target.commentText.value,
-        // captchaText: e.target.captcha.value,
-        // captchaId: captcha.id
+        captchaText: e.target.captcha.value,
+        captchaId: captcha.id
       }, {withCredentials: true})
       setCreateCommentError(undefined)
       onHide()
