@@ -33,6 +33,10 @@ __decorate([
     __metadata("design:type", Comment)
 ], Comment.prototype, "parent", void 0);
 __decorate([
+    (0, typeorm_1.Column)('jsonb', { default: [] }),
+    __metadata("design:type", Array)
+], Comment.prototype, "files", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => Comment_1, comment => comment.parent, { cascade: true }),
     __metadata("design:type", Array)
 ], Comment.prototype, "replies", void 0);

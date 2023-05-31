@@ -12,6 +12,7 @@ class CommentService {
             'comment.id',
             'comment.createdAt',
             'comment.text',
+            'comment.files',
             'user.id',
             'user.name',
             'user.email',

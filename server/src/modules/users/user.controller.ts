@@ -16,6 +16,8 @@ import { addJwtCookie, removeJwtCookie } from '../../utils/jwt.utils';
 import TryCatch from '../../utils/try-catch.decorator';
 import { emailQueue } from './email.queue';
 import { scanAndDelete } from '../../utils/redis/scanAndDelete';
+import fsPromises from 'fs/promises'
+import { resizeIfNecessary } from '../../utils/resizeImage';
 
 dotenv.config()
 
@@ -128,19 +130,15 @@ export class UserController {
     }
     const allowedAvatarExtensions = ['gif', 'jpg', 'png', 'jpeg']
     const avatarExtension = avatar.mimetype.split('/')[1]
-    console.log(avatarExtension);
     if (!allowedAvatarExtensions.includes(avatarExtension)){
       res.status(400)
       return 'Only gif, jpg, png extensions accepted. Wrong extension.'
     }
     // Resize the image if necessary
-    const image = sharp(avatar.tempFilePath, {animated: avatarExtension === 'gif'});
-    const metadata = await image.metadata();
 
-    if (metadata.width && metadata.height && (metadata.width > 320 || metadata.height > 240)) {
-      const resizedImage = await image.resize(320, 240).toBuffer();
-      avatar.data = resizedImage
-    }
+    await resizeIfNecessary(avatar, avatarExtension === 'gif')
+
+
     //save image
     await deleteAvatarFromFirebase(req.user.id)
     const url = await uploadAvatarToFirebase(avatar, req.user.id)

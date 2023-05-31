@@ -24,11 +24,11 @@ emailQueue.process('sendActivationEmail', async (job, done) => {
             text: ''
         });
         console.log(`email sent to ${email}`);
-        return;
+        return done();
     }
     catch (err) {
         console.log(err.message);
-        done(new Error());
+        done(new Error(err.message));
     }
 });
 //# sourceMappingURL=email.queue.js.map

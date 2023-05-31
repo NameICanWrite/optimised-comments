@@ -15,6 +15,5 @@ router.post('/logout', auth_middleware_1.authAndGetUser, user_controller_1.userC
 router.post('/set-avatar', auth_middleware_1.authAndGetUser, user_controller_1.userController.setAvatar);
 router.post('/set-homepage', auth_middleware_1.authAndGetUser, user_controller_1.userController.setHomepage);
 router.get('/current', auth_middleware_1.authAndGetUser, user_controller_1.userController.getCurrentUser);
-router.get('/current/comments', auth_middleware_1.authAndGetUser, user_controller_1.userController.getCurrentUserComments);
 exports.default = router;
 //# sourceMappingURL=user.route.js.map

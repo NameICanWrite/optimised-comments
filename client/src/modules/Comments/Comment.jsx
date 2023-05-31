@@ -5,7 +5,7 @@ import { Comments } from './Comments';
 import emptyAvatar from '../../assets/emptyAvatar.jpg'
 import CreateCommentForm from './CreateCommentForm';
 
-export default function Comment({ id, text, createdAt, user, replies, deepness, currentUser }) {
+export default function Comment({ id, text, createdAt, user, replies, deepness, currentUser, files }) {
   const [showCreateReplyForm, setShowCreateReplyForm] = useState(false)
   const [showReplies, setShowReplies] = useState(false)
   return (
@@ -21,7 +21,20 @@ export default function Comment({ id, text, createdAt, user, replies, deepness, 
             <p className={styles.comments__email}>{user.email}</p>
           </div>
         </div>
-        <p className={styles.comments__text} dangerouslySetInnerHTML={{__html: text}}></p>
+        <div className={styles.comments__text}>
+          <p dangerouslySetInnerHTML={{__html: text}}></p>
+          {
+            files && files.map && files.map(({type, url}, index) => {
+              if (type === 'image') {
+                return (<img className={styles.contentImage} src={url} alt="" key={index}/>)
+              } 
+              if (type === 'text') {
+                return (<a href={url} className={styles.fileDownloadIcon} key={index}></a>)
+              }
+            })
+          }
+        </div>
+        
       </div>
       <div>
         <div className={styles.showReplies}>

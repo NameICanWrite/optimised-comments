@@ -1,17 +1,13 @@
-import { Response, Request, NextFunction } from 'express';
-import { Comment } from './Comment';
-import { User } from '../users/User';
+import { Response, Request } from 'express';
 export declare class CommentController {
     constructor();
-    getAllComments(req: Request, res: Response, next: NextFunction): Promise<any>;
+    getAllComments(req: Request): Promise<any>;
     createComment(req: Request<{
         id: string;
     }, any, {
-        parentId: number;
+        parentId: string;
         text: string;
-    }> & {
-        user: User;
-    }): Promise<Comment>;
+    }>, res: Response): Promise<import("./Comment").Comment | "Wrong file type!" | "Text file too large!">;
 }
 declare const commentController: CommentController;
 export default commentController;

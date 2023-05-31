@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAvatarFromFirebase = exports.uploadAvatarToFirebase = void 0;
+exports.deleteAvatarFromFirebase = exports.uploadCommentFileToFirebase = exports.uploadAvatarToFirebase = void 0;
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
 const uuid_1 = require("uuid");
 const app = firebase_admin_1.default.initializeApp({
@@ -13,8 +13,11 @@ const app = firebase_admin_1.default.initializeApp({
 const storage = firebase_admin_1.default.storage(app);
 const bucket = storage.bucket();
 async function uploadAvatarToFirebase(avatar, userId) {
-    const fileRef = bucket.file(`avatars/${userId}/${(0, uuid_1.v4)() + avatar.name}`);
-    await fileRef.save(avatar.data);
+    const firebasePath = `avatars/${userId}/${(0, uuid_1.v4)() + avatar.name}`;
+    await bucket.upload(avatar.tempFilePath, {
+        destination: firebasePath
+    });
+    const fileRef = bucket.file(firebasePath);
     const [url] = await fileRef.getSignedUrl({
         action: 'read',
         expires: '03-01-2500',
@@ -23,6 +26,20 @@ async function uploadAvatarToFirebase(avatar, userId) {
     return url;
 }
 exports.uploadAvatarToFirebase = uploadAvatarToFirebase;
+async function uploadCommentFileToFirebase(avatar) {
+    const firebasePath = `comment-files/${(0, uuid_1.v4)() + avatar.name}`;
+    await bucket.upload(avatar.tempFilePath, {
+        destination: firebasePath
+    });
+    const fileRef = bucket.file(firebasePath);
+    const [url] = await fileRef.getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500',
+    });
+    console.log('comment file url = ' + url);
+    return url;
+}
+exports.uploadCommentFileToFirebase = uploadCommentFileToFirebase;
 async function deleteAvatarFromFirebase(userId) {
     var _a;
     const [files] = await bucket.getFiles({ prefix: `avatars/${userId}` });

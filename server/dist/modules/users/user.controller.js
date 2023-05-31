@@ -18,7 +18,6 @@ const user_service_1 = __importDefault(require("./user.service"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const consts_1 = require("../../consts");
 const dotenv_1 = __importDefault(require("dotenv"));
-const sharp_1 = __importDefault(require("sharp"));
 const firebase_1 = require("../../utils/firebase");
 const joi_1 = __importDefault(require("joi"));
 const redis_1 = __importDefault(require("../../config/redis"));
@@ -26,6 +25,7 @@ const jwt_utils_1 = require("../../utils/jwt.utils");
 const try_catch_decorator_1 = __importDefault(require("../../utils/try-catch.decorator"));
 const email_queue_1 = require("./email.queue");
 const scanAndDelete_1 = require("../../utils/redis/scanAndDelete");
+const resizeImage_1 = require("../../utils/resizeImage");
 dotenv_1.default.config();
 let UserController = class UserController {
     constructor() { }
@@ -112,17 +112,11 @@ let UserController = class UserController {
         }
         const allowedAvatarExtensions = ['gif', 'jpg', 'png', 'jpeg'];
         const avatarExtension = avatar.mimetype.split('/')[1];
-        console.log(avatarExtension);
         if (!allowedAvatarExtensions.includes(avatarExtension)) {
             res.status(400);
             return 'Only gif, jpg, png extensions accepted. Wrong extension.';
         }
-        const image = (0, sharp_1.default)(avatar.tempFilePath, { animated: avatarExtension === 'gif' });
-        const metadata = await image.metadata();
-        if (metadata.width && metadata.height && (metadata.width > 320 || metadata.height > 240)) {
-            const resizedImage = await image.resize(320, 240).toBuffer();
-            avatar.data = resizedImage;
-        }
+        await (0, resizeImage_1.resizeIfNecessary)(avatar, avatarExtension === 'gif');
         await (0, firebase_1.deleteAvatarFromFirebase)(req.user.id);
         const url = await (0, firebase_1.uploadAvatarToFirebase)(avatar, req.user.id);
         const user = await user_service_1.default.setAvatar(req.user.id, url);

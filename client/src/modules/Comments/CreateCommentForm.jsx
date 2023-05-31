@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { API_URL } from '../../consts'
+import React, { useEffect, useRef, useState } from 'react'
+import { API_URL, MAX_FILES_IN_COMMENT } from '../../consts'
 import axios from 'axios'
 
 export default function CreateCommentForm({ parentId, onHide }) {
@@ -11,6 +11,8 @@ export default function CreateCommentForm({ parentId, onHide }) {
     setCaptcha({ id, svg })
   }
 
+  const fileInputRef = useRef(null);
+
   const onSubmit = async (e) => {
     e.preventDefault()
     const validTagsRegex = /<(a|code|i|strong)(\s+\w+="[^"]*")*>.*<\/\1>|^[^<>]+$/;
@@ -21,13 +23,20 @@ export default function CreateCommentForm({ parentId, onHide }) {
       return;
     }
 
+    const formData = new FormData()
+
+    parentId && formData.append('parentId', parentId)
+    formData.append('text', text)
+    formData.append('captchaText', e.target.captcha.value)
+    formData.append('captchaId', captcha.id)
+
+    Array.from(fileInputRef.current.files).forEach((file, index) => index < MAX_FILES_IN_COMMENT && formData.append('file' + index, file))
+
     try {
-      await axios.post(`${API_URL}/comments`, {
-        parentId,
-        text: e.target.commentText.value,
-        captchaText: e.target.captcha.value,
-        captchaId: captcha.id
-      }, {withCredentials: true})
+      await axios.post(`${API_URL}/comments`, formData, {
+        withCredentials: true, 
+        headers: { 'Content-Type': 'multipart/form-data' } 
+      })
       setCreateCommentError(undefined)
       onHide()
     } catch (error) {
@@ -59,6 +68,8 @@ export default function CreateCommentForm({ parentId, onHide }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
+        <p>You can also add up to 2 files: .txt, .png, .jpg/.jpeg, .gif</p>
+        <input ref={fileInputRef} type="file" multiple accept="image/png, image/jpeg, image/gif, text/plain"/>
         <button>Confirm</button><button type='button' onClick={onHide}>Cancel</button>
         <p style={{color: 'red', textAlign: 'center', width: '100%'}}>
           {createCommentError}

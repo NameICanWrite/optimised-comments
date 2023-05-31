@@ -17,6 +17,12 @@ export class Comment extends BaseEntity {
   @ManyToOne(() => Comment, /*{ onDelete: 'CASCADE' }*/)
   parent: Comment;
 
+  @Column('jsonb', { default: []})
+  files: {
+    url: string,
+    type: string
+  }[]
+
   
   @OneToMany(() => Comment, comment => comment.parent, {cascade: true})
   replies: Comment[];

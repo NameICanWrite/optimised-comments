@@ -17,9 +17,11 @@ const comments_service_1 = __importDefault(require("./comments.service"));
 const try_catch_decorator_1 = __importDefault(require("../../utils/try-catch.decorator"));
 const redis_1 = __importDefault(require("../../config/redis"));
 const scanAndDelete_1 = require("../../utils/redis/scanAndDelete");
+const firebase_1 = require("../../utils/firebase");
+const resizeImage_1 = require("../../utils/resizeImage");
 let CommentController = class CommentController {
     constructor() { }
-    async getAllComments(req, res, next) {
+    async getAllComments(req) {
         const commentReq = req;
         let { page, limit, sortField, isSortAscending } = commentReq.query;
         const allowedSortFields = [
@@ -48,11 +50,42 @@ let CommentController = class CommentController {
         await redis_1.default.setEx(cacheKey, 3600, JSON.stringify(comments));
         return comments;
     }
-    async createComment(req) {
+    async createComment(req, res) {
         var _a;
-        const { parentId, text } = req.body;
+        if (!req.user)
+            throw new Error();
+        const { parentId: parentIdString, text } = req.body;
+        const parentId = parseInt(parentIdString);
+        let commentFiles = [];
+        if (req.files) {
+            const allowedMimetypes = ['text/plain', 'image/gif', 'image/jpeg', 'image/png'];
+            const maxTextFileSize = 100 * 1000;
+            const maxFileNumber = 2;
+            for (let i in req.files) {
+                if (commentFiles.length > maxFileNumber)
+                    break;
+                const file = req.files[i];
+                if (!allowedMimetypes.includes(file.mimetype)) {
+                    res.status(400);
+                    return 'Wrong file type!';
+                }
+                if (file.mimetype === 'text/plain' && file.size > maxTextFileSize) {
+                    res.status(400);
+                    return 'Text file too large!';
+                }
+                commentFiles.push(Object.assign({ type: file.mimetype.split('/')[0] }, file));
+            }
+            commentFiles = await Promise.all(commentFiles.map(file => new Promise(async (resolve) => {
+                if (file.type !== 'text') {
+                    await (0, resizeImage_1.resizeIfNecessary)(file, file.mimetype === 'image/gif');
+                }
+                const url = await (0, firebase_1.uploadCommentFileToFirebase)(file);
+                return resolve({ type: file.type, url });
+            })));
+        }
         const newComment = await comments_service_1.default.create({
             text,
+            files: commentFiles,
             parent: parentId ? { id: parentId } : undefined
         }, req.user);
         (_a = newComment.user) === null || _a === void 0 ? true : delete _a.password;

@@ -5,6 +5,10 @@ export declare class Comment extends BaseEntity {
     createdAt: Date;
     text: string;
     parent: Comment;
+    files: {
+        url: string;
+        type: string;
+    }[];
     replies: Comment[];
     user: Partial<User>;
 }

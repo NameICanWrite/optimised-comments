@@ -12,7 +12,11 @@ export interface IComment {
   parent?: IComment
   replies?: IComment[]
   user?: IUser | User
+  files?: Array<{type: string, url: string}> | string
 }
+
+
+
 
 export type AllCommentsReq= Request & {
     user: User,

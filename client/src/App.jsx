@@ -80,8 +80,8 @@ function App() {
          )
          setIsSignupSuccess(true)
       } catch (error) {
-         console.log(error.response.data.message);
-         setSignupError(error.response.data.message)
+         console.log(error.response.data);
+         setSignupError(error.response.data)
       }
    }
 
@@ -155,6 +155,7 @@ function App() {
             setComments([comment, ...comments]);
          } else {
             const newCommments = [...comments]
+            console.log(comments);
             const parent = findCommentParent(comments, comment.parent.id)
             
             parent.replies = [comment, ...parent.replies]
@@ -186,10 +187,6 @@ function App() {
         socket.close();
       };
     }, [addNewCommentToState]);
-
-   //  useEffect(() => {
-   //    console.log(comments);
-   //  }, [comments])
 
 
    useEffect(() => {

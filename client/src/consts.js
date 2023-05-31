@@ -13,7 +13,7 @@ if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
   HEALTH_CHECK_URL = `https://${apiDomain}`
 }
 
-
+export const MAX_FILES_IN_COMMENT = 2
 
 export {API_URL, WEBSOCKET_API_URL, HEALTH_CHECK_URL}
 
