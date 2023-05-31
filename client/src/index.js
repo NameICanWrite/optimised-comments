@@ -9,13 +9,17 @@ import { Theme } from './theme/theme';
 import reportWebVitals from './reportWebVitals';
 import './index.scss';
 import { BrowserRouter } from 'react-router-dom';
+import HealthCheck from './modules/HealthCheck/HealthCheck'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
    // <React.StrictMode>
       <BrowserRouter>
          <ThemeProvider theme={Theme}>
+            <HealthCheck>
                <App />
+            </HealthCheck>
+               
          </ThemeProvider>
       </BrowserRouter>
    // </React.StrictMode>,
