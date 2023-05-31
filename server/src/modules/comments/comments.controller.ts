@@ -12,7 +12,7 @@ import {DeepPartial} from 'typeorm'
 import {AllCommentsReq} from './comments.type'
 
 
-// @TryCatch
+@TryCatch
 export class CommentController {
     constructor() {}
 

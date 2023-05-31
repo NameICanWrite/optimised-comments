@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.emailQueue = void 0;
 const bull_1 = __importDefault(require("bull"));
 const mailer_1 = require("../../config/mailer");
-const emailQueue = new bull_1.default('email');
+const emailQueue = new bull_1.default('email', process.env.REDIS_URL, {});
 exports.emailQueue = emailQueue;
 emailQueue.process('sendActivationEmail', async (job, done) => {
     const { email, link } = job.data;
@@ -24,10 +24,11 @@ emailQueue.process('sendActivationEmail', async (job, done) => {
             text: ''
         });
         console.log(`email sent to ${email}`);
-        return done();
+        return;
     }
     catch (err) {
         console.log(err.message);
+        done(new Error());
     }
 });
 //# sourceMappingURL=email.queue.js.map

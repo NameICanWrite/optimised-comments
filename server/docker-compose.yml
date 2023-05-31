@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     network_mode: bridge
     ports: 
-      - '6379:6379'
+      - 6379:6379
 
   api:
     build: .
@@ -16,4 +16,6 @@ services:
       - redis
     restart: on-failure
     ports:
-      - '5000:5000'
+      - 5000:5000
+    links: 
+      - redis

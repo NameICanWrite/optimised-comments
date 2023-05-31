@@ -11,6 +11,7 @@ declare global {
       CLIENT_ROOT_URL:string;
       FIREBASE_PRIVATE_KEY: string
       FIREBASE_SERVER_UID: string
+      REDIS_URL: string
     }
   }
   namespace Express {

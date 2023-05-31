@@ -26,7 +26,10 @@ export class UserController {
 
 
   async login(req: Request<any, any, { email: string, password: string }>, res: Response, next: NextFunction) {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    email = email.toLowerCase()
+
     const user = await userService.findByEmail(email);
     if (!user) {
       res.status(401)
@@ -59,7 +62,10 @@ export class UserController {
 
 
   async signUpAndSendActivationEmail(req: Request, res: Response, next: NextFunction) {
-    const { email, password, name } = req.body
+    let { email, password, name } = req.body
+
+    email = email.toLowerCase()
+    name = name.toLowerCase()
 
     let existingUserWithEmail = await userService.findByEmail(email);
     if (existingUserWithEmail) {
@@ -90,6 +96,7 @@ export class UserController {
     await emailQueue.add('sendActivationEmail', {email, link},
       { attempts: 5, backoff: { type: 'fixed', delay: 1000 } }
       );
+      console.log('added to queue');
     return 'Confirmation email sent'
   }
 

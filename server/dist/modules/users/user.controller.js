@@ -30,7 +30,8 @@ dotenv_1.default.config();
 let UserController = class UserController {
     constructor() { }
     async login(req, res, next) {
-        const { email, password } = req.body;
+        let { email, password } = req.body;
+        email = email.toLowerCase();
         const user = await user_service_1.default.findByEmail(email);
         if (!user) {
             res.status(401);
@@ -57,7 +58,9 @@ let UserController = class UserController {
         return res.redirect(`${process.env.CLIENT_ROOT_URL}`);
     }
     async signUpAndSendActivationEmail(req, res, next) {
-        const { email, password, name } = req.body;
+        let { email, password, name } = req.body;
+        email = email.toLowerCase();
+        name = name.toLowerCase();
         let existingUserWithEmail = await user_service_1.default.findByEmail(email);
         if (existingUserWithEmail) {
             if (existingUserWithEmail.isActive) {
@@ -83,6 +86,7 @@ let UserController = class UserController {
         const token = jsonwebtoken_1.default.sign({ userId: createdUser.id }, process.env.JWT_SECRET);
         const link = `${consts_1.BACKEND_PAGES.CONFIRM_SIGNUP}/${token}`;
         await email_queue_1.emailQueue.add('sendActivationEmail', { email, link }, { attempts: 5, backoff: { type: 'fixed', delay: 1000 } });
+        console.log('added to queue');
         return 'Confirmation email sent';
     }
     async logout(req, res) {

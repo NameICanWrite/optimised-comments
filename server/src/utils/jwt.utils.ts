@@ -21,9 +21,6 @@ export const addJwtCookie = (res: Response, payload: any) => {
 
   const expires = new Date(Date.now() + parseInt(process.env.JWT_COOKIES_EXPIRES_IN) * 24 * 3600 * 1000)
   res.cookie('jwt', token, {...jwtCookieOptions, expires});
-  console.log('added cookie');
-  console.log({...jwtCookieOptions, expires});
-  console.log('token', token);
   return token
 }
 

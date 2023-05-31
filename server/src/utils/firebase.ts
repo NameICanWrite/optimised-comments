@@ -1,6 +1,5 @@
 import { UploadedFile } from "express-fileupload";
 import admin from "firebase-admin";
-import {ref, uploadBytes, getStorage, getDownloadURL} from "firebase/storage"
 import {v4 as uuid} from 'uuid'
 // Initialize Firebase
 const app = admin.initializeApp({

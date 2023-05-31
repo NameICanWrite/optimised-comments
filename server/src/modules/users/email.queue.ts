@@ -1,7 +1,10 @@
-import Queue from 'bull';
+import Queue, {QueueOptions} from 'bull';
 import { sendMail } from '../../config/mailer';
+import dotenv from 'dotenv'
 
-const emailQueue = new Queue('email');
+const emailQueue = new Queue('email', process.env.REDIS_URL, {
+  
+});
 
 emailQueue.process('sendActivationEmail', async (job, done) => {
   const { email, link } = job.data;
@@ -21,6 +24,7 @@ emailQueue.process('sendActivationEmail', async (job, done) => {
   return done()
 } catch (err: any) {
   console.log(err.message);
+  done(new Error(err.message))
 }
 });
 

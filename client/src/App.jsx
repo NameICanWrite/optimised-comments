@@ -74,7 +74,7 @@ function App() {
 
    const signup = async ({ email, name, password }) => {
       try {
-         await axios.post(`${API_URL}/comments/signup-and-send-activation-email`,
+         await axios.post(`${API_URL}/user/signup-and-send-activation-email`,
             { email, name, password },
             { withCredentials: true }
          )

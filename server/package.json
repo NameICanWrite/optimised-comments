@@ -11,7 +11,8 @@
     "watch-deploy": "nodemon dist/server.js",
     "server": "concurrently \"npm run watch-tsc\" \"npm run watch-deploy\"",
     "start": "npm run build && npm run deploy",
-    "build": "tsc"
+    "build": "tsc",
+    "d": "docker-compose up --build"
   },
   "dependencies": {
     "@types/cors": "^2.8.13",
