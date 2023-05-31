@@ -21,31 +21,23 @@
 
 # Локальний запуск
 
-## Клонуйте проєкт
+1) Клонуйте проєкт
 
     `git clone https://github.com/SashaVoloshyn/dZENcode_task.git`
 
-## Перейдіть в папку **server**
+2) Перейдіть в папку **server**
 
 `cd server`
 
-## Додайте файл `.env` із секретними ключами в папку server
+3) Додайте файл `.env` із секретними ключами в папку server
 
-## Запустіть docker а потім введіть відповідну команду
-
-`docker-compose up --build`
+4) Запустіть docker а потім введіть відповідну команду: `docker-compose up --build`
 
 
-## Перейдіть у папку **../client**
+5) Перейдіть у папку **../client**: `cd ../client;`
 
-    `cd ../client;`
+6) Запустіть фронтенд:
+    - через npm:`npm install;npm start`
 
-## Запустіть фронтенд
-    'npm install;
-    npm start`
-
-    або 
-
-    `docker build -t my-react-app .;
-    docker run -p 3000:3000 my-react-app`
+    - через docker: `docker build -t my-react-app .;docker run -p 3000:3000 my-react-app`
 
