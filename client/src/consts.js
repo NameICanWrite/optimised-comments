@@ -1,4 +1,13 @@
 export const COMMENTS_ON_PAGE = 6
+let API_URL, WEBSOCKET_API_URL
 
-export const API_URL = (process.env.PRODUCTION_API_URL || 'http://localhost:5000') + '/api'
-export const WEBSOCKET_API_URL = process.env.PRODUCTION_WEBSOCKET_API_URL || 'ws://localhost:5000'
+const apiDomain = 'optimised-comments.onrender.com'
+
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  API_URL = `http://localhost:5000`
+  WEBSOCKET_API_URL = 'ws://localhost:5000'
+} else {
+  API_URL = `https://${apiDomain}`
+  WEBSOCKET_API_URL = `ws://${apiDomain}`
+}
+export {API_URL, WEBSOCKET_API_URL}
